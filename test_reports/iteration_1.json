@@ -1,0 +1,25 @@
+{
+  "summary": "First-finish smoke: All backend API routes (/api/profile, /api/projects with filters, /api/contact validation and happy path) work as specified. Frontend hero, role tabs, project search, skills (5 groups with progress bars), experience/education/certifications, and contact form (validation toast + success toast) all functional.",
+  "tested_scope": ["backend", "frontend", "integration"],
+  "passed": [
+    "GET /api/profile 200 - keys: profile/experience/education/skills/certifications/roles; 5 roles present; name=Abhishek Banaj",
+    "GET /api/projects 200 - counts {all:50, ai-engineer:7, data-scientist:26, data-analyst:21, data-engineer:1, full-stack:16}",
+    "GET /api/projects?role=ai-engineer -> 7 projects (matches count)",
+    "GET /api/projects?q=stock -> 2 projects (both stock-related names)",
+    "POST /api/contact (valid) -> 200 {ok:true, id:<uuid>}",
+    "POST /api/contact (empty) -> 400 'name, email, message are required'",
+    "POST /api/contact (bad email) -> 400 'Invalid email'",
+    "Hero: name, headline, avatar, hero-github, hero-linkedin, hero-email visible",
+    "All 5 role tabs render; clicking role-tab-ai-engineer shows exactly 7 project cards",
+    "projects-search input filters to 1 card for 'stock' (visible subset)",
+    "5 skill-group-* rendered with 21 progress width bars",
+    "Experience (1 item), Education (2 items), Certifications (6 items) render",
+    "contact-form: empty submit shows sonner toast 'Please fill all fields'; valid submit shows 'Message sent! Abhishek will get back to you soon.'"
+  ],
+  "failed": [],
+  "action_items": [],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "retest_needed": false,
+  "full_testing_deferred": true,
+  "notes": "Contact form input testids are contact-name-input/contact-email-input/contact-message-input (not contact-name/email/message). No blockers."
+}
