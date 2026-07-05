@@ -8,7 +8,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import {
   Github, Linkedin, Mail, MapPin, Download, Send, Sun, Moon,
   ArrowUpRight, CheckCircle2, TrendingUp, Award, GraduationCap, Sparkles,
-  Zap, Globe, HelpCircle, X
+  Zap, Globe, HelpCircle, X, Lock, RefreshCw, LogOut
 } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -763,12 +763,177 @@ const Home = () => {
   );
 };
 
+// ================ ANALYTICS ADMIN ================
+const BarRow = ({ label, count, max }) => (
+  <div>
+    <div className="flex items-baseline justify-between text-sm mb-1">
+      <span className="truncate pr-2">{label}</span>
+      <span className="font-mono text-[hsl(var(--muted-foreground))] shrink-0">{count}</span>
+    </div>
+    <div className="h-1.5 rounded-full bg-[hsl(var(--muted))] overflow-hidden">
+      <div className="h-full rounded-full bg-[hsl(var(--accent))]" style={{ width: `${max ? (count / max) * 100 : 0}%` }}/>
+    </div>
+  </div>
+);
+
+const AdminCard = ({ title, children }) => (
+  <div className="card-soft rounded-2xl p-6">
+    <div className="font-mono text-[11px] uppercase tracking-widest text-[hsl(var(--muted-foreground))] mb-4">{title}</div>
+    {children}
+  </div>
+);
+
+const AnalyticsAdmin = () => {
+  const [token, setToken] = useState(() => localStorage.getItem("analytics_token") || "");
+  const [tokenInput, setTokenInput] = useState("");
+  const [days, setDays] = useState(30);
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const fetchData = (tok, d) => {
+    if (!tok) return;
+    setLoading(true); setError(null);
+    axios.get(`${API}/analytics`, { params: { token: tok, days: d } })
+      .then((r) => { setData(r.data); localStorage.setItem("analytics_token", tok); setToken(tok); })
+      .catch((e) => {
+        if (e.response?.status === 403) { setError("Invalid token"); localStorage.removeItem("analytics_token"); setToken(""); }
+        else setError("Failed to load analytics");
+      })
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    document.title = "Analytics — Abhishek Banaj";
+    if (token) fetchData(token, days);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (token && data) fetchData(token, days);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [days]);
+
+  const logout = () => { localStorage.removeItem("analytics_token"); setToken(""); setData(null); };
+
+  if (!token) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-6">
+        <form onSubmit={(e) => { e.preventDefault(); fetchData(tokenInput, days); }}
+              data-testid="admin-login-form" className="card-soft rounded-2xl p-8 w-full max-w-sm">
+          <div className="flex items-center gap-2 mb-5 text-[hsl(var(--muted-foreground))]">
+            <Lock size={16}/><span className="font-mono text-xs uppercase tracking-widest">Analytics access</span>
+          </div>
+          <input type="password" value={tokenInput} onChange={(e) => setTokenInput(e.target.value)}
+                 data-testid="admin-token-input" placeholder="Enter access token" autoFocus
+                 className="w-full bg-transparent border-b border-border py-2 focus:outline-none focus:border-[hsl(var(--accent))] mb-4"/>
+          {error && <div className="text-sm text-red-400 mb-3">{error}</div>}
+          <button type="submit" disabled={loading} data-testid="admin-token-submit"
+                  className="btn-primary w-full inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium disabled:opacity-50">
+            {loading ? "Checking…" : "View analytics"}
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  const maxType = Math.max(1, ...(data?.totals_by_type || []).map((t) => t.count));
+  const maxProject = Math.max(1, ...(data?.top_projects || []).map((p) => p.count));
+  const maxReferrer = Math.max(1, ...(data?.top_referrers || []).map((r) => r.count));
+  const maxDaily = Math.max(1, ...(data?.daily || []).map((d) => d.count));
+
+  return (
+    <div className="container-x py-10 md:py-14">
+      <div className="flex items-center justify-between flex-wrap gap-4 mb-8">
+        <div>
+          <div className="font-mono text-xs uppercase tracking-widest text-[hsl(var(--muted-foreground))] mb-2">Private</div>
+          <h1 className="font-serif text-3xl font-bold">Portfolio analytics</h1>
+        </div>
+        <div className="flex items-center gap-2">
+          {[7, 30, 90].map((d) => (
+            <button key={d} onClick={() => setDays(d)} data-testid={`admin-days-${d}`}
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium border ${days === d ? "bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))] border-transparent" : "border-border text-[hsl(var(--muted-foreground))]"}`}>
+              {d}d
+            </button>
+          ))}
+          <button onClick={() => fetchData(token, days)} aria-label="Refresh" className="btn-ghost inline-flex items-center justify-center w-9 h-9 rounded-full">
+            <RefreshCw size={15}/>
+          </button>
+          <button onClick={logout} aria-label="Log out" data-testid="admin-logout" className="btn-ghost inline-flex items-center justify-center w-9 h-9 rounded-full">
+            <LogOut size={15}/>
+          </button>
+        </div>
+      </div>
+
+      {loading && !data && <div className="font-mono text-sm text-[hsl(var(--muted-foreground))]">Loading…</div>}
+      {error && <div className="text-sm text-red-400 mb-4">{error}</div>}
+
+      {data && (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <AdminCard title="Contact messages">
+            <div className="font-serif text-5xl font-bold text-[hsl(var(--accent))]">{data.contact_messages}</div>
+            <div className="text-sm text-[hsl(var(--muted-foreground))] mt-1">in the last {data.range_days} days</div>
+          </AdminCard>
+
+          <AdminCard title="Events by type">
+            <div className="space-y-3">
+              {(data.totals_by_type || []).length ? data.totals_by_type.map((t) => (
+                <BarRow key={t.type} label={t.type} count={t.count} max={maxType}/>
+              )) : <div className="text-sm text-[hsl(var(--muted-foreground))]">No events yet.</div>}
+            </div>
+          </AdminCard>
+
+          <AdminCard title="Top referrers">
+            <div className="space-y-3">
+              {(data.top_referrers || []).length ? data.top_referrers.map((r, i) => (
+                <BarRow key={i} label={r.referrer} count={r.count} max={maxReferrer}/>
+              )) : <div className="text-sm text-[hsl(var(--muted-foreground))]">No referrers yet.</div>}
+            </div>
+          </AdminCard>
+
+          <AdminCard title="Top project clicks">
+            <div className="space-y-3">
+              {(data.top_projects || []).length ? data.top_projects.map((p, i) => (
+                <BarRow key={i} label={p.label || "(unlabeled)"} count={p.count} max={maxProject}/>
+              )) : <div className="text-sm text-[hsl(var(--muted-foreground))]">No project clicks yet.</div>}
+            </div>
+          </AdminCard>
+
+          <AdminCard title="Daily activity">
+            <div className="flex items-end gap-1 h-24">
+              {(data.daily || []).map((d, i) => (
+                <div key={i} title={`${d.date}: ${d.count}`} className="flex-1 bg-[hsl(var(--accent))]/70 rounded-sm min-h-[2px]"
+                     style={{ height: `${(d.count / maxDaily) * 100}%` }}/>
+              ))}
+              {!(data.daily || []).length && <div className="text-sm text-[hsl(var(--muted-foreground))]">No activity yet.</div>}
+            </div>
+          </AdminCard>
+
+          <AdminCard title="Recent events">
+            <div className="space-y-2 max-h-64 overflow-y-auto text-sm">
+              {(data.recent_events || []).length ? data.recent_events.map((e, i) => (
+                <div key={i} className="flex items-baseline justify-between gap-2 border-b border-border/50 pb-1.5 last:border-0">
+                  <span className="truncate">{e.type}{e.label ? ` · ${e.label}` : ""}</span>
+                  <span className="font-mono text-[10px] text-[hsl(var(--muted-foreground))] shrink-0">{new Date(e.created_at).toLocaleString()}</span>
+                </div>
+              )) : <div className="text-[hsl(var(--muted-foreground))]">No events yet.</div>}
+            </div>
+          </AdminCard>
+        </div>
+      )}
+    </div>
+  );
+};
+
 function App() {
   return (
     <div className="App">
       <Toaster position="top-right" richColors closeButton/>
       <BrowserRouter>
-        <Routes><Route path="/" element={<Home/>}/></Routes>
+        <Routes>
+          <Route path="/" element={<Home/>}/>
+          <Route path="/admin" element={<AnalyticsAdmin/>}/>
+        </Routes>
       </BrowserRouter>
     </div>
   );
