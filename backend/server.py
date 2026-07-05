@@ -158,20 +158,41 @@ async def fetch_github_repos() -> List[Dict[str, Any]]:
 # ============= Static profile data =============
 PROFILE = {
     "name": "Abhishek Banaj",
-    "headline": "Data Scientist · AI Engineer · Analytics Professional",
     "location": "Bengaluru, Karnataka, India",
     "email": "abhishekbanaj01@gmail.com",
     "github": "https://github.com/AbhishekCbanaj",
     "linkedin": "https://www.linkedin.com/in/abhishekbanaj/",
     "portfolio_legacy": "https://abhishekbanaj.netlify.app/",
-    "avatar_url": "https://avatars.githubusercontent.com/u/110324276?v=4",
+    "avatar_url": "https://api.dicebear.com/9.x/notionists/svg?seed=AbhishekBanaj&backgroundColor=c0aede,b6e3f4,ffd5dc&radius=20",
+    "headline": "Business Analyst @ Practo · Data · Analytics · AI",
+    "value_prop": "I turn messy data into growth. Recently at Practo: unlocked 6–10% growth via LTV/CAC modeling, saved ₹12L/month by killing SEM fraud, and cut a 4-minute RCA query to 45 seconds.",
     "summary": (
-        "Business Analyst @ Practo · Data Science graduate from REVA University (GPA 8.35). "
-        "I ship end-to-end analytics that move the needle — LTV/CAC models that flagged 2 "
-        "loss-making tiers, cohort analyses that lifted retention 12%, Redshift query "
-        "rewrites that cut RCA reporting from 4 minutes to 45 seconds. Also building "
-        "LLM-powered agents and real-time data pipelines on the side."
+        "MSc Data Science (REVA, 8.35 GPA). Business Analyst @ Practo shipping "
+        "revenue-moving analytics on 4M+ users. Fluent in SQL, Python, Power BI, "
+        "Redshift, and LLM-powered tooling. Available for full-time roles in "
+        "Analytics, Business Analysis, Data Science, and AI Engineering."
     ),
+    "impact_metrics": [
+        {"value": "6–10%", "label": "Paid transactions lifted at Practo via LTV/CAC repricing"},
+        {"value": "₹12L", "label": "Monthly SEM fraud spend paused after RCA analysis"},
+        {"value": "12%", "label": "30-day retention improved through cohort targeting"},
+        {"value": "4× ↓", "label": "Redshift RCA query cut from 4 min → 45 sec"},
+    ],
+    "why_hire_me": [
+        {
+            "title": "Business impact first",
+            "body": "Every project shipped at Practo & InLighn moved a real metric — retention, conversion, cost, or cycle time. I optimise for outcomes, not dashboards.",
+        },
+        {
+            "title": "Full analytics stack",
+            "body": "SQL (CTEs, window functions, Redshift tuning) · Python (Pandas, Scikit-learn) · Power BI (DAX + modeling) · GA4 · A/B testing · cohort & funnel analysis · RCA.",
+        },
+        {
+            "title": "AI-native mindset",
+            "body": "Built LLM+SQL agents that dropped ad-hoc turnaround from 24h to 5min. Comfortable pairing traditional analytics with LangChain, OpenAI, and RAG when it wins.",
+        },
+    ],
+    "roles_open_to": ["Business Analyst", "Data Analyst", "Data Scientist", "Analytics Engineer", "Product Analyst"],
     "stats": {
         "years_experience": "1.5+",
         "projects_shipped": "20+",

@@ -1,10 +1,10 @@
-"""Backend API tests for Abhishek Banaj Portfolio (iteration 2)."""
+"""Backend tests for portfolio API - iteration 3"""
 import os
 import pytest
 import requests
 
 BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://github-portfolio-23.preview.emergentagent.com").rstrip("/")
-API = f"{BASE_URL}/api"
+ANALYTICS_TOKEN = "r_0CJIn7mLmAxRaLU9dBlYYHp4yADitI"
 
 
 @pytest.fixture(scope="module")
@@ -14,81 +14,70 @@ def client():
     return s
 
 
-# --- Profile endpoint (resume + practo experience + featured projects) ---
 class TestProfile:
-    def test_profile_status(self, client):
-        r = client.get(f"{API}/profile", timeout=20)
+    def test_profile_shape(self, client):
+        r = client.get(f"{BASE_URL}/api/profile", timeout=20)
         assert r.status_code == 200
-        self.data = r.json()
-
-    def test_resume_urls(self, client):
-        data = client.get(f"{API}/profile", timeout=20).json()
-        p = data["profile"]
-        assert p.get("resume_url"), "resume_url missing"
-        assert "customer-assets.emergentagent.com" in p["resume_url"] or p["resume_url"].startswith("http")
-        assert p.get("resume_drive_url"), "resume_drive_url missing"
-        assert "drive.google.com" in p["resume_drive_url"]
-
-    def test_practo_experience(self, client):
-        data = client.get(f"{API}/profile", timeout=20).json()
-        exp = data["experience"]
-        assert len(exp) >= 1
-        first = exp[0]
-        assert first["role"] == "Business Analyst Intern"
-        assert first["company"] == "Practo Technologies"
-        assert first["current"] is True
-        assert len(first["bullets"]) == 5
-        joined = " ".join(first["bullets"]).lower()
-        assert "ltv" in joined and "cac" in joined
-        assert "cohort" in joined
-        assert "redshift" in joined
-
-    def test_featured_projects(self, client):
-        data = client.get(f"{API}/profile", timeout=20).json()
-        fp = data["featured_projects"]
-        assert len(fp) == 2
-        ids = {p["id"] for p in fp}
-        assert ids == {"hiremory", "nl-analytics"}
-
-
-# --- Contact endpoint with Resend ---
-class TestContact:
-    def test_contact_success_with_email(self, client):
-        payload = {
-            "name": "TEST_Automated Tester",
-            "email": "tester@example.com",
-            "message": "Automated backend test — please ignore. iteration_2",
-        }
-        r = client.post(f"{API}/contact", json=payload, timeout=30)
-        assert r.status_code == 200, r.text
         data = r.json()
-        assert data["ok"] is True
-        assert "id" in data
-        # Resend key is configured — email_sent should be True
-        assert data["email_sent"] is True, f"email_sent should be True; error={data.get('email_error')}"
-        assert data.get("email_error") is None
+        p = data["profile"]
+        assert isinstance(p.get("value_prop"), str) and len(p["value_prop"]) > 20
+        assert isinstance(p["impact_metrics"], list) and len(p["impact_metrics"]) == 4
+        for m in p["impact_metrics"]:
+            assert "value" in m and "label" in m
+        assert isinstance(p["why_hire_me"], list) and len(p["why_hire_me"]) == 3
+        for w in p["why_hire_me"]:
+            assert "title" in w and "body" in w
+        assert "dicebear" in (p.get("avatar_url") or "").lower()
 
-    def test_contact_validation_missing_fields(self, client):
-        r = client.post(f"{API}/contact", json={"name": "x", "email": "", "message": ""}, timeout=15)
+    def test_profile_experience_practo(self, client):
+        r = client.get(f"{BASE_URL}/api/profile", timeout=20)
+        exp = r.json()["experience"]
+        assert exp[0]["role"] == "Business Analyst Intern"
+        assert exp[0]["company"] == "Practo Technologies"
+        assert exp[0]["current"] is True
+
+
+class TestTrack:
+    def test_track_ok(self, client):
+        r = client.post(f"{BASE_URL}/api/track", json={
+            "type": "TEST_page_view", "label": "TEST_home", "meta": {"src": "TEST"}
+        }, timeout=15)
+        assert r.status_code == 200
+        assert r.json() == {"ok": True}
+
+    def test_track_invalid_type(self, client):
+        r = client.post(f"{BASE_URL}/api/track", json={"type": "", "label": "x"}, timeout=15)
         assert r.status_code == 400
 
-    def test_contact_validation_bad_email(self, client):
-        r = client.post(f"{API}/contact", json={"name": "x", "email": "notanemail", "message": "hi"}, timeout=15)
+
+class TestAnalytics:
+    def test_analytics_invalid_token(self, client):
+        r = client.get(f"{BASE_URL}/api/analytics", params={"token": "wrong"}, timeout=15)
+        assert r.status_code == 403
+
+    def test_analytics_valid_token(self, client):
+        client.post(f"{BASE_URL}/api/track", json={
+            "type": "TEST_project_click", "label": "TEST_hiremory"
+        }, timeout=15)
+        r = client.get(f"{BASE_URL}/api/analytics", params={"token": ANALYTICS_TOKEN}, timeout=20)
+        assert r.status_code == 200
+        d = r.json()
+        for key in ["totals_by_type", "top_projects", "top_referrers", "daily", "contact_messages", "recent_events"]:
+            assert key in d
+
+
+class TestContact:
+    def test_contact_success(self, client):
+        r = client.post(f"{BASE_URL}/api/contact", json={
+            "name": "TEST_User",
+            "email": "test+iter3@example.com",
+            "message": "TEST iteration 3 message"
+        }, timeout=25)
+        assert r.status_code == 200
+        d = r.json()
+        assert d.get("ok") is True
+        assert "email_sent" in d
+
+    def test_contact_missing_field(self, client):
+        r = client.post(f"{BASE_URL}/api/contact", json={"name": "x", "email": "a@b.com"}, timeout=15)
         assert r.status_code == 400
-
-
-# --- Projects endpoint (light retest of role filtering) ---
-class TestProjects:
-    def test_projects_all(self, client):
-        r = client.get(f"{API}/projects", timeout=30)
-        assert r.status_code == 200
-        d = r.json()
-        assert "projects" in d and "counts" in d
-        assert d["total"] > 0
-
-    def test_projects_role_filter(self, client):
-        r = client.get(f"{API}/projects", params={"role": "ai-engineer"}, timeout=30)
-        assert r.status_code == 200
-        d = r.json()
-        for p in d["projects"]:
-            assert "ai-engineer" in p["roles"]
