@@ -6,7 +6,9 @@ import os
 import logging
 import time
 import re
+import asyncio
 import httpx
+import resend
 from pathlib import Path
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
@@ -17,6 +19,15 @@ load_dotenv(ROOT_DIR / '.env')
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
+
+# Resend email config
+RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
+SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
+OWNER_EMAIL = os.environ.get('OWNER_EMAIL', 'abhishekbanaj01@gmail.com')
+RESUME_URL = os.environ.get('RESUME_URL', '')
+RESUME_DRIVE_URL = os.environ.get('RESUME_DRIVE_URL', '')
+if RESEND_API_KEY:
+    resend.api_key = RESEND_API_KEY
 
 app = FastAPI(title="Abhishek Banaj Portfolio API")
 api_router = APIRouter(prefix="/api")
@@ -154,29 +165,47 @@ PROFILE = {
     "portfolio_legacy": "https://abhishekbanaj.netlify.app/",
     "avatar_url": "https://avatars.githubusercontent.com/u/110324276?v=4",
     "summary": (
-        "Data Science graduate from REVA University (GPA 8.35) with hands-on experience "
-        "building end-to-end ML systems, LLM-powered agents, real-time data pipelines, "
-        "and business intelligence dashboards. I turn complex data into decisions across "
-        "finance, healthcare, retail and supply-chain domains."
+        "Business Analyst @ Practo · Data Science graduate from REVA University (GPA 8.35). "
+        "I ship end-to-end analytics that move the needle — LTV/CAC models that flagged 2 "
+        "loss-making tiers, cohort analyses that lifted retention 12%, Redshift query "
+        "rewrites that cut RCA reporting from 4 minutes to 45 seconds. Also building "
+        "LLM-powered agents and real-time data pipelines on the side."
     ),
     "stats": {
-        "years_experience": "1+",
+        "years_experience": "1.5+",
         "projects_shipped": "20+",
         "domains": "6",
         "certifications": "6+",
     },
+    "resume_url": RESUME_URL,
+    "resume_drive_url": RESUME_DRIVE_URL,
 }
 
 EXPERIENCE = [
     {
-        "role": "Data Science Intern",
-        "company": "InLighn Tech",
-        "location": "Remote",
-        "period": "Mar 2025 – Jun 2025",
+        "role": "Business Analyst Intern",
+        "company": "Practo Technologies",
+        "location": "Bengaluru",
+        "period": "Sep 2025 – Present",
+        "current": True,
         "bullets": [
-            "Built and deployed ML models on real-world business data",
-            "Implemented data preprocessing pipelines and BI reporting",
-            "Delivered analytical solutions across retail and finance verticals",
+            "Built LTV, CAC & contribution-margin models across 5 tiers; isolated acquisition cost by channel and flagged 2 loss-making tiers — Growth team repriced/retargeted and lifted paid transactions by 6–10%.",
+            "Diagnosed a 34% payment drop by segmenting 500K+ sessions by device & network quality — traced to an SDK bug on low-connectivity users; Product shipped a fix in 2 weeks and recovered conversion.",
+            "Analyzed 90-day cohort retention for 4M+ users and mapped drop-off by segment × day-range — CRM replaced 2 blanket campaigns with 5 targeted ones, improving 30-day retention ~12%.",
+            "Validated SEM spend by comparing click-to-install ratios across 3 campaigns — flagged ₹12L/month in fraudulent spend and paused all 3.",
+            "Rewrote 4 Redshift queries (removed full-table scans + redundant joins) — cut execution from 3–4 min to 45s, automated the RCA report, saved 6+ analyst-hours/week.",
+        ],
+    },
+    {
+        "role": "Data Analyst Intern",
+        "company": "InLighn Tech (InLighnX Global Pvt Ltd)",
+        "location": "Bengaluru",
+        "period": "Mar 2025 – Jun 2025",
+        "current": False,
+        "bullets": [
+            "Built a SQL pipeline with validation checks to automate a 15+ hr/week manual KPI process — cut delivery time by 60% and reduced recurring data errors.",
+            "Developed 5 self-serve dashboards in Power BI & Excel — reduced ad-hoc requests by 70% in the first month.",
+            "Audited SQL models after revenue reporting discrepancies, identified drifted filters and aligned teams to unified definitions — removed 6 hrs/week of reconciliation.",
         ],
     },
 ]
@@ -200,36 +229,79 @@ EDUCATION = [
 
 SKILLS = [
     {"group": "Languages", "items": [
-        {"name": "Python", "level": 92},
-        {"name": "SQL", "level": 90},
+        {"name": "Python (Pandas, NumPy, Scikit-learn)", "level": 92},
+        {"name": "SQL (CTEs, Window Functions)", "level": 92},
+        {"name": "TypeScript / JavaScript", "level": 62},
         {"name": "R", "level": 65},
-        {"name": "TypeScript", "level": 60},
+    ]},
+    {"group": "Analytics & BI", "items": [
+        {"name": "Power BI (DAX, Modeling)", "level": 92},
+        {"name": "Excel (Pivot, Power Query, Macros)", "level": 90},
+        {"name": "Tableau", "level": 72},
+        {"name": "Google Analytics (GA4)", "level": 78},
+        {"name": "CleverTap", "level": 74},
     ]},
     {"group": "ML & AI", "items": [
         {"name": "Scikit-learn", "level": 88},
         {"name": "XGBoost / LightGBM", "level": 82},
         {"name": "TensorFlow / PyTorch", "level": 72},
-        {"name": "LLMs / LangChain / RAG", "level": 80},
-        {"name": "NLP & Prompt Engineering", "level": 85},
+        {"name": "LLMs / LangChain / RAG", "level": 82},
+        {"name": "OpenAI API & Prompt Engineering", "level": 86},
     ]},
-    {"group": "Analytics & BI", "items": [
-        {"name": "Power BI", "level": 90},
-        {"name": "Tableau", "level": 70},
-        {"name": "Excel (Advanced)", "level": 88},
-        {"name": "Statistical Analysis", "level": 85},
-    ]},
-    {"group": "Data Engineering", "items": [
-        {"name": "Apache Spark", "level": 78},
-        {"name": "Kafka", "level": 72},
-        {"name": "MySQL / PostgreSQL", "level": 88},
-        {"name": "MongoDB", "level": 74},
-    ]},
-    {"group": "Cloud & DevOps", "items": [
+    {"group": "Data Engineering & Cloud", "items": [
+        {"name": "Amazon Redshift", "level": 84},
+        {"name": "PostgreSQL / MySQL", "level": 90},
+        {"name": "Apache Spark & Kafka", "level": 76},
+        {"name": "AWS S3", "level": 76},
         {"name": "Microsoft Azure AI", "level": 78},
-        {"name": "Docker", "level": 80},
-        {"name": "Git / GitHub", "level": 90},
-        {"name": "Streamlit / FastAPI", "level": 82},
     ]},
+    {"group": "Analysis Techniques", "items": [
+        {"name": "A/B Testing", "level": 85},
+        {"name": "Cohort & Funnel Analysis", "level": 90},
+        {"name": "Root Cause Analysis (RCA)", "level": 88},
+        {"name": "User Segmentation & KPI Tracking", "level": 90},
+        {"name": "Statistical Analysis", "level": 84},
+    ]},
+    {"group": "Tools & DevOps", "items": [
+        {"name": "Docker", "level": 80},
+        {"name": "Git / GitHub", "level": 92},
+        {"name": "Streamlit / FastAPI", "level": 84},
+        {"name": "Next.js / Supabase", "level": 68},
+    ]},
+]
+
+# Highlighted projects that deserve top billing (from resume)
+FEATURED_PROJECTS = [
+    {
+        "id": "hiremory",
+        "name": "Hiremory — Recruiter Outreach SaaS",
+        "description": (
+            "Full-stack platform (Next.js + Python + Supabase/Postgres) that personalizes "
+            "recruiter emails from your inbox and auto-follows-up. Includes Postgres schema, "
+            "funnel dashboard (sent → replied → resume-sent → bounced), and row-level security."
+        ),
+        "html_url": "https://github.com/AbhishekCbanaj/hiremory",
+        "homepage": "https://hiremory.vercel.app",
+        "language": "TypeScript",
+        "topics": ["nextjs", "python", "supabase", "saas", "outreach"],
+        "roles": ["full-stack", "ai-engineer"],
+        "featured": True,
+    },
+    {
+        "id": "nl-analytics",
+        "name": "Natural Language Analytics Tool",
+        "description": (
+            "LLM-powered tool (LangChain + OpenAI) that converts plain-English questions into "
+            "SQL — 20+ query types, schema validation to reject malformed outputs. Cut ad-hoc "
+            "turnaround from 24 hours to 5 minutes for non-technical teams."
+        ),
+        "html_url": "https://github.com/AbhishekCbanaj/AI-Powered-Data-Analysis-Assistant-Using-Natural-Language-and-LLMs",
+        "homepage": "",
+        "language": "Python",
+        "topics": ["langchain", "openai", "nl2sql", "llm"],
+        "roles": ["ai-engineer", "data-analyst"],
+        "featured": True,
+    },
 ]
 
 CERTIFICATIONS = [
@@ -263,6 +335,7 @@ async def get_profile():
         "skills": SKILLS,
         "certifications": CERTIFICATIONS,
         "roles": [{"id": r["id"], "label": r["label"], "tagline": r["tagline"]} for r in ROLE_RULES],
+        "featured_projects": FEATURED_PROJECTS,
     }
 
 
@@ -303,9 +376,45 @@ async def submit_contact(payload: Dict[str, Any]):
         "email": email,
         "message": message,
         "created_at": datetime.now(timezone.utc).isoformat(),
+        "email_sent": False,
     }
+
+    # Send email via Resend (non-blocking, fail-soft)
+    email_sent = False
+    email_error = None
+    if RESEND_API_KEY:
+        try:
+            html = f"""
+            <div style="font-family: -apple-system, Segoe UI, Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; background: #faf9f5; color: #1c1917;">
+              <div style="border-left: 4px solid #a3e635; padding: 12px 20px; background: #ffffff; border-radius: 6px;">
+                <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: #78716c; margin-bottom: 8px;">New Portfolio Contact</div>
+                <h2 style="margin: 0 0 16px 0; font-size: 22px;">{name}</h2>
+                <table style="width: 100%; font-size: 14px;">
+                  <tr><td style="color:#78716c; padding: 4px 0;">Email</td><td><a href="mailto:{email}" style="color:#0f766e;">{email}</a></td></tr>
+                  <tr><td style="color:#78716c; padding: 4px 0;">Sent</td><td>{doc['created_at']}</td></tr>
+                </table>
+                <div style="margin-top: 16px; padding: 16px; background: #f5f5f4; border-radius: 6px; white-space: pre-wrap; font-size: 14px; line-height: 1.6;">{message}</div>
+              </div>
+              <div style="margin-top: 16px; text-align: center; font-size: 11px; color: #a8a29e;">via abhishekbanaj.com portfolio</div>
+            </div>
+            """
+            params = {
+                "from": f"Portfolio <{SENDER_EMAIL}>",
+                "to": [OWNER_EMAIL],
+                "reply_to": email,
+                "subject": f"Portfolio contact: {name}",
+                "html": html,
+            }
+            result = await asyncio.to_thread(resend.Emails.send, params)
+            email_sent = bool(result)
+            doc["email_sent"] = email_sent
+            doc["email_id"] = (result or {}).get("id")
+        except Exception as e:
+            email_error = str(e)
+            logger.error(f"Resend email failed: {e}")
+
     await db.contact_messages.insert_one(doc)
-    return {"ok": True, "id": doc["id"]}
+    return {"ok": True, "id": doc["id"], "email_sent": email_sent, "email_error": email_error}
 
 
 app.include_router(api_router)

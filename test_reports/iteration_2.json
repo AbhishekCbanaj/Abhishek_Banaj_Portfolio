@@ -1,0 +1,46 @@
+{
+  "summary": "Iteration 2 testing: Backend 100% pass (9/9 pytest incl. real Resend email sent). Frontend has multiple deviations from the review spec — missing/renamed data-testids, hero text does not match spec, FeaturedProjects grid is not sticky-stacked and lacks 3rd Practo item, theme class naming inverted, and success toast text differs from spec. Contact form does POST and backend returns email_sent:true.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Contact", "issue": "Missing data-testid='contact-resume-download' — code has 'contact-resumes' instead (links to Drive URL, not resume PDF)", "selector": "[data-testid='contact-resume-download']", "priority": "HIGH"},
+      {"component": "FeaturedProjects", "issue": "Missing data-testid='featured-projects-section' on the section wrapper (currently rendered inside Projects section without an outer testid)", "selector": "[data-testid='featured-projects-section']", "priority": "HIGH"},
+      {"component": "Hero", "issue": "Hero heading shows profile.name ('Abhishek Banaj.') instead of massive gradient text 'HI, I'M ABHISHEK' per spec. No .hero-heading class in use.", "selector": "[data-testid='hero-name']", "priority": "HIGH"},
+      {"component": "Contact toast", "issue": "Success toast text is 'Message sent! Abhishek will get back to you soon.' — spec required 'Message sent — email delivered to Abhishek!' when email_sent:true", "selector": "sonner toast", "priority": "MEDIUM"},
+      {"component": "FeaturedProjects", "issue": "Cards render in a plain 2-col grid; not sticky-stacking as spec requires. Also spec expected 3 cards incl. 'Practo Growth Analytics', but API returns only 2 (hiremory + nl-analytics). Either add Practo Growth Analytics to FEATURED_PROJECTS in server.py or render an additional static card in the section.", "selector": "FeaturedProjects component", "priority": "MEDIUM"},
+      {"component": "Theme toggle / CSS", "issue": "Theme class naming is inverted. Default localStorage theme='light' but the visual is dark. When html.light present -> dark UI shown; html.dark present -> light UI shown. Spec expects html.light == LIGHT mode with purple/magenta hero gradient. Fix either the useTheme mapping or the CSS overrides in index.css so class names match visual modes.", "selector": "html.light / html.dark", "priority": "HIGH"}
+    ],
+    "integration_issues": [
+      {"flow": "Contact submit", "issue": "Backend correctly returns {ok:true, email_sent:true} and Resend delivers email. Frontend toast fires but text does not match spec.", "affected_selectors": ["[data-testid='contact-submit']"]}
+    ],
+    "design_issues": [
+      {"screen": "Global", "issues": ["Default landing is visually dark but the DOM class says 'light' — confusing for downstream style overrides and inconsistent with spec's naming convention"]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/backend_test.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "Rename data-testid 'contact-resumes' → 'contact-resume-download' and point href to profile.resume_url (PDF), not resume_drive_url",
+    "Add data-testid='featured-projects-section' to the FeaturedProjects wrapper section",
+    "Update hero heading to display 'HI, I\\'M ABHISHEK' with .hero-heading gradient class (silvery in dark, purple/magenta in light)",
+    "Change success toast text to 'Message sent — email delivered to Abhishek!' when response.email_sent is true",
+    "Implement sticky-stacking layout for featured project cards and add 'Practo Growth Analytics' as a 3rd featured card (either in backend FEATURED_PROJECTS or as static frontend card)",
+    "Fix theme class naming inversion: either flip the class assignment in useTheme (App.js line 33-34) so html.light = light UI, html.dark = dark UI, OR flip the CSS overrides in /app/frontend/src/index.css. Also set default theme to 'dark' since dark is the intended default."
+  ],
+  "critical_code_review_comments": [
+    "App.js is 700 lines — should be split into per-section files (Hero, Contact, FeaturedProjects, Projects, etc.)",
+    "Duplicate useTheme hook in both App.js and primitives.jsx — remove one and import from a single source",
+    "server.py: PROFILE dict mutates at import time from env vars — fine, but Practo Growth Analytics not in FEATURED_PROJECTS despite being referenced in spec",
+    "Contact endpoint stores document then updates email_sent inside try — good fail-soft; but doc.email_id may be None on failure; consider filtering None fields before insert"
+  ],
+  "updated_files": ["/app/backend/tests/backend_test.py"],
+  "success_rate": {"backend": "100%", "frontend": "~45%"},
+  "test_credentials": "N/A",
+  "seed_data_creation": "1 real Resend email sent to abhishekbanaj01@gmail.com from test 'TEST_Automated Tester' + 1 mongo contact_messages doc inserted from playwright test (name='TEST Playwright')",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend fully validated with pytest (backend_test.py). Frontend has 6 spec deviations — most are simple testid/text changes; theme inversion + hero text + FeaturedProjects restructure are the larger items. After main agent fixes, re-run playwright to verify testids & toast text; backend pytest can be re-run as regression.",
+  "rca of the issue": "Multiple frontend features described in the review request were partially implemented: testids used different names than spec (contact-resumes vs contact-resume-download), FeaturedProjects section lacks a wrapper testid, hero heading uses profile.name instead of hard-coded 'HI, I'M ABHISHEK' gradient text, and CSS class → theme mapping is inverted. Backend Resend integration is fully functional — email was successfully delivered via resend.Emails.send with configured API key."
+}
