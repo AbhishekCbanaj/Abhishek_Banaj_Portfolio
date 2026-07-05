@@ -26,6 +26,7 @@ SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
 OWNER_EMAIL = os.environ.get('OWNER_EMAIL', 'abhishekbanaj01@gmail.com')
 RESUME_URL = os.environ.get('RESUME_URL', '')
 RESUME_DRIVE_URL = os.environ.get('RESUME_DRIVE_URL', '')
+ANALYTICS_TOKEN = os.environ.get('ANALYTICS_TOKEN', '')
 if RESEND_API_KEY:
     resend.api_key = RESEND_API_KEY
 
@@ -415,6 +416,95 @@ async def submit_contact(payload: Dict[str, Any]):
 
     await db.contact_messages.insert_one(doc)
     return {"ok": True, "id": doc["id"], "email_sent": email_sent, "email_error": email_error}
+
+
+# ============= Recruiter Analytics =============
+@api_router.post("/track")
+async def track_event(payload: Dict[str, Any]):
+    from datetime import datetime, timezone
+    import uuid as _uuid
+    event_type = (payload.get("type") or "").strip()
+    if not event_type or len(event_type) > 64:
+        raise HTTPException(status_code=400, detail="Invalid event type")
+    label = (payload.get("label") or "")[:200]
+    meta = payload.get("meta") or {}
+    if not isinstance(meta, dict):
+        meta = {}
+    # Trim meta to avoid abuse
+    meta = {k: (str(v)[:200] if v is not None else None) for k, v in list(meta.items())[:10]}
+    doc = {
+        "id": str(_uuid.uuid4()),
+        "type": event_type,
+        "label": label,
+        "meta": meta,
+        "path": (payload.get("path") or "")[:200],
+        "referrer": (payload.get("referrer") or "")[:200],
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.portfolio_events.insert_one(doc)
+    return {"ok": True}
+
+
+@api_router.get("/analytics")
+async def get_analytics(token: str = Query(...), days: int = Query(30, ge=1, le=365)):
+    if not ANALYTICS_TOKEN or token != ANALYTICS_TOKEN:
+        raise HTTPException(status_code=403, detail="Invalid token")
+    from datetime import datetime, timezone, timedelta
+    since = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
+
+    # Totals per event type
+    pipeline_types = [
+        {"$match": {"created_at": {"$gte": since}}},
+        {"$group": {"_id": "$type", "count": {"$sum": 1}}},
+        {"$sort": {"count": -1}},
+    ]
+    types = await db.portfolio_events.aggregate(pipeline_types).to_list(200)
+
+    # Top project clicks (label used for project name/id)
+    pipeline_projects = [
+        {"$match": {"created_at": {"$gte": since},
+                    "type": {"$in": ["project_click", "featured_project_click"]}}},
+        {"$group": {"_id": "$label", "count": {"$sum": 1},
+                    "type": {"$first": "$type"}}},
+        {"$sort": {"count": -1}},
+        {"$limit": 25},
+    ]
+    top_projects = await db.portfolio_events.aggregate(pipeline_projects).to_list(50)
+
+    # Top referrers
+    pipeline_refs = [
+        {"$match": {"created_at": {"$gte": since}, "referrer": {"$ne": ""}}},
+        {"$group": {"_id": "$referrer", "count": {"$sum": 1}}},
+        {"$sort": {"count": -1}},
+        {"$limit": 15},
+    ]
+    referrers = await db.portfolio_events.aggregate(pipeline_refs).to_list(50)
+
+    # Daily timeline
+    pipeline_daily = [
+        {"$match": {"created_at": {"$gte": since}}},
+        {"$group": {"_id": {"$substr": ["$created_at", 0, 10]}, "count": {"$sum": 1}}},
+        {"$sort": {"_id": 1}},
+    ]
+    daily = await db.portfolio_events.aggregate(pipeline_daily).to_list(400)
+
+    # Recent contact messages count
+    contacts_count = await db.contact_messages.count_documents({"created_at": {"$gte": since}})
+
+    # Recent 30 raw events
+    recent = await db.portfolio_events.find(
+        {"created_at": {"$gte": since}}, {"_id": 0}
+    ).sort("created_at", -1).limit(30).to_list(30)
+
+    return {
+        "range_days": days,
+        "totals_by_type": [{"type": t["_id"], "count": t["count"]} for t in types],
+        "top_projects": [{"label": p["_id"], "count": p["count"], "type": p["type"]} for p in top_projects],
+        "top_referrers": [{"referrer": r["_id"], "count": r["count"]} for r in referrers],
+        "daily": [{"date": d["_id"], "count": d["count"]} for d in daily],
+        "contact_messages": contacts_count,
+        "recent_events": recent,
+    }
 
 
 app.include_router(api_router)
