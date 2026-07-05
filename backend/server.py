@@ -479,7 +479,6 @@ async def get_analytics(token: str = Query(...), days: int = Query(30, ge=1, le=
         {"$group": {"_id": "$type", "count": {"$sum": 1}}},
         {"$sort": {"count": -1}},
     ]
-    types = await db.portfolio_events.aggregate(pipeline_types).to_list(200)
 
     # Top project clicks (label used for project name/id)
     pipeline_projects = [
@@ -490,7 +489,6 @@ async def get_analytics(token: str = Query(...), days: int = Query(30, ge=1, le=
         {"$sort": {"count": -1}},
         {"$limit": 25},
     ]
-    top_projects = await db.portfolio_events.aggregate(pipeline_projects).to_list(50)
 
     # Top referrers
     pipeline_refs = [
@@ -499,7 +497,6 @@ async def get_analytics(token: str = Query(...), days: int = Query(30, ge=1, le=
         {"$sort": {"count": -1}},
         {"$limit": 15},
     ]
-    referrers = await db.portfolio_events.aggregate(pipeline_refs).to_list(50)
 
     # Daily timeline
     pipeline_daily = [
@@ -507,15 +504,16 @@ async def get_analytics(token: str = Query(...), days: int = Query(30, ge=1, le=
         {"$group": {"_id": {"$substr": ["$created_at", 0, 10]}, "count": {"$sum": 1}}},
         {"$sort": {"_id": 1}},
     ]
-    daily = await db.portfolio_events.aggregate(pipeline_daily).to_list(400)
 
-    # Recent contact messages count
-    contacts_count = await db.contact_messages.count_documents({"created_at": {"$gte": since}})
-
-    # Recent 30 raw events
-    recent = await db.portfolio_events.find(
-        {"created_at": {"$gte": since}}, {"_id": 0}
-    ).sort("created_at", -1).limit(30).to_list(30)
+    # Run all reads concurrently instead of one-by-one to stay well under the function timeout
+    types, top_projects, referrers, daily, contacts_count, recent = await asyncio.gather(
+        db.portfolio_events.aggregate(pipeline_types).to_list(200),
+        db.portfolio_events.aggregate(pipeline_projects).to_list(50),
+        db.portfolio_events.aggregate(pipeline_refs).to_list(50),
+        db.portfolio_events.aggregate(pipeline_daily).to_list(400),
+        db.contact_messages.count_documents({"created_at": {"$gte": since}}),
+        db.portfolio_events.find({"created_at": {"$gte": since}}, {"_id": 0}).sort("created_at", -1).limit(30).to_list(30),
+    )
 
     return {
         "range_days": days,
