@@ -1,5 +1,7 @@
 # Abhishek Banaj — Portfolio
 
+🔗 **Repo:** [github.com/AbhishekCbanaj/Abhishek_Banaj_Portfolio](https://github.com/AbhishekCbanaj/Abhishek_Banaj_Portfolio)
+
 Personal portfolio site for **Abhishek Banaj** (Business Analyst @ Practo · Data · Analytics · AI).
 Showcases experience, projects, skills, and a working contact form, backed by a small FastAPI service.
 
