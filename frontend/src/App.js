@@ -6,7 +6,8 @@ import { Toaster, toast } from "sonner";
 import { motion, useInView, useMotionValue, animate, AnimatePresence } from "framer-motion";
 import {
   Github, Linkedin, Mail, MapPin, Download, Send, Sun, Moon,
-  ArrowUpRight, CheckCircle2, TrendingUp, Award, GraduationCap, Sparkles
+  ArrowUpRight, CheckCircle2, TrendingUp, Award, GraduationCap, Sparkles,
+  Zap, Globe, HelpCircle
 } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -511,15 +512,23 @@ const Contact = ({ profile }) => {
           <p className="text-[hsl(var(--muted-foreground))] mt-4 max-w-md text-sm md:text-base">
             Hiring for Analytics, Business Analyst, Data Scientist, or AI Engineer roles? I reply within 24 hours.
           </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--accent))]/30 bg-[hsl(var(--accent))]/10 px-3 py-1 text-xs font-medium text-[hsl(var(--accent))]">
+              <Zap size={12}/> Immediate Joiner
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--accent))]/30 bg-[hsl(var(--accent))]/10 px-3 py-1 text-xs font-medium text-[hsl(var(--accent))]">
+              <Globe size={12}/> Open for Relocation
+            </span>
+          </div>
           <div className="mt-6 space-y-2 text-sm">
             <a href={`mailto:${profile?.email}`} data-testid="contact-email" onClick={() => track("external_click", "email")}
-               className="flex items-center gap-3 hover:text-[hsl(var(--accent))] link-underline"><Mail size={15}/> {profile?.email}</a>
+               className="flex items-center gap-3 hover:text-[hsl(var(--accent))] link-underline"><Mail size={15}/> Email</a>
             <a href={profile?.linkedin} target="_blank" rel="noopener noreferrer" data-testid="contact-linkedin"
                onClick={() => track("external_click", "linkedin", { source: "contact" })}
-               className="flex items-center gap-3 hover:text-[hsl(var(--accent))] link-underline"><Linkedin size={15}/> /in/abhishekbanaj</a>
+               className="flex items-center gap-3 hover:text-[hsl(var(--accent))] link-underline"><Linkedin size={15}/> LinkedIn</a>
             <a href={profile?.github} target="_blank" rel="noopener noreferrer" data-testid="contact-github"
                onClick={() => track("external_click", "github", { source: "contact" })}
-               className="flex items-center gap-3 hover:text-[hsl(var(--accent))] link-underline"><Github size={15}/> AbhishekCbanaj</a>
+               className="flex items-center gap-3 hover:text-[hsl(var(--accent))] link-underline"><Github size={15}/> GitHub</a>
             <div className="flex items-center gap-3 text-[hsl(var(--muted-foreground))]"><MapPin size={15}/> {profile?.location}</div>
           </div>
           <div className="mt-6 flex flex-wrap gap-2">
@@ -563,6 +572,39 @@ const Contact = ({ profile }) => {
           </form>
         </Reveal>
       </div>
+      <Reveal delay={0.15} className="mt-10 md:mt-16">
+        <div className="card-soft rounded-2xl p-6 md:p-8">
+          <div className="font-mono text-xs uppercase tracking-widest text-[hsl(var(--muted-foreground))] mb-5 flex items-center gap-2">
+            <HelpCircle size={14}/> Recruiter Questions
+          </div>
+          <dl className="grid sm:grid-cols-2 gap-6">
+            <div>
+              <dt className="text-sm font-semibold">Total Years of Experience</dt>
+              <dd className="text-sm text-[hsl(var(--muted-foreground))] mt-1">1 year (Business Analyst &amp; Data Analyst internships)</dd>
+            </div>
+            <div>
+              <dt className="text-sm font-semibold">Current CTC</dt>
+              <dd className="text-sm text-[hsl(var(--muted-foreground))] mt-1">₹3.6 LPA (₹30,000/month)</dd>
+            </div>
+            <div>
+              <dt className="text-sm font-semibold">Expected CTC (ECTC)</dt>
+              <dd className="text-sm text-[hsl(var(--muted-foreground))] mt-1">₹8 LPA (Negotiable)</dd>
+            </div>
+            <div>
+              <dt className="text-sm font-semibold">Notice Period</dt>
+              <dd className="text-sm text-[hsl(var(--muted-foreground))] mt-1">Immediate Joiner</dd>
+            </div>
+            <div>
+              <dt className="text-sm font-semibold">Current Location</dt>
+              <dd className="text-sm text-[hsl(var(--muted-foreground))] mt-1">Bengaluru, Karnataka</dd>
+            </div>
+            <div>
+              <dt className="text-sm font-semibold">Open For Relocation</dt>
+              <dd className="text-sm text-[hsl(var(--muted-foreground))] mt-1">Yes, comfortable relocating and working from the office or remote.</dd>
+            </div>
+          </dl>
+        </div>
+      </Reveal>
     </section>
   );
 };
