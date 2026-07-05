@@ -168,7 +168,6 @@ html.dark .blob { opacity: 0.35; }
 /* Animated underline */
 .link-underline {
     position: relative;
-    display: inline-block;
 }
 .link-underline::after {
     content: '';

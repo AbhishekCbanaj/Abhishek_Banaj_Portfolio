@@ -588,7 +588,7 @@ const Contact = ({ profile }) => {
             </div>
             <div>
               <dt className="text-sm font-semibold">Expected CTC (ECTC)</dt>
-              <dd className="text-sm text-[hsl(var(--muted-foreground))] mt-1">₹8 LPA (Negotiable)</dd>
+              <dd className="text-sm text-[hsl(var(--muted-foreground))] mt-1">₹6–10 LPA (Negotiable)</dd>
             </div>
             <div>
               <dt className="text-sm font-semibold">Notice Period</dt>
