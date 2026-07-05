@@ -4,10 +4,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import { Toaster, toast } from "sonner";
 import { motion, useInView, useMotionValue, animate, AnimatePresence } from "framer-motion";
+import * as Dialog from "@radix-ui/react-dialog";
 import {
   Github, Linkedin, Mail, MapPin, Download, Send, Sun, Moon,
   ArrowUpRight, CheckCircle2, TrendingUp, Award, GraduationCap, Sparkles,
-  Zap, Globe, HelpCircle
+  Zap, Globe, HelpCircle, X
 } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -93,6 +94,23 @@ const CASE_STUDIES = [
     ],
     stack: ["SQL", "Redshift", "GA4", "Python", "Cohort", "A/B Testing"],
     href: "https://www.linkedin.com/in/abhishekbanaj/",
+    details: {
+      context: "Practo is a 4M+ user healthtech platform. Channel-level unit economics were unclear — some acquisition channels were quietly loss-making — and a 34% drop in payment completions had gone unexplained.",
+      approach: [
+        "Built LTV, CAC, and contribution-margin models across 5 pricing tiers to isolate acquisition cost by channel, and flagged 2 tiers that were structurally loss-making.",
+        "Segmented 500K+ payment sessions by device and network quality to trace the 34% payment drop to an SDK bug affecting low-connectivity users.",
+        "Ran 90-day cohort retention analysis across 4M+ users, mapping drop-off by segment × day-range.",
+        "Validated SEM spend by comparing click-to-install ratios across 3 campaigns to catch fraudulent spend.",
+        "Rewrote 4 Redshift queries — removing full-table scans and redundant joins — and automated the resulting RCA report.",
+      ],
+      impact: [
+        "Growth repriced/retargeted the 2 flagged tiers, lifting paid transactions 6–10%",
+        "Product shipped the SDK fix in 2 weeks, recovering lost conversion",
+        "CRM replaced 2 blanket campaigns with 5 targeted ones, improving 30-day retention ~12%",
+        "₹12L/month in fraudulent SEM spend caught and paused",
+        "RCA query time cut from 3–4 min to 45 sec, saving 6+ analyst-hours/week",
+      ],
+    },
   },
   {
     id: "inlighn",
@@ -107,6 +125,19 @@ const CASE_STUDIES = [
     ],
     stack: ["SQL", "Power BI", "Excel", "DAX", "Data Modeling"],
     href: "https://www.linkedin.com/in/abhishekbanaj/",
+    details: {
+      context: "InLighn Tech's team was burning 15+ hours a week on manual KPI reporting, and ad-hoc data requests were overwhelming the team's bandwidth.",
+      approach: [
+        "Built a SQL pipeline with validation checks to automate the manual KPI process.",
+        "Shipped 5 self-serve dashboards in Power BI and Excel so stakeholders could pull their own numbers instead of filing requests.",
+        "Audited SQL models after revenue reporting discrepancies surfaced, traced them to drifted filters, and aligned the team on unified metric definitions.",
+      ],
+      impact: [
+        "KPI delivery time cut by 60%",
+        "Ad-hoc requests dropped 70% within the first month",
+        "6 hours/week of reconciliation work eliminated",
+      ],
+    },
   },
   {
     id: "nl-analytics",
@@ -297,78 +328,145 @@ const WhyHireMe = ({ items }) => (
 );
 
 // ================ WORK ================
-const Work = () => (
-  <section id="work" data-testid="work-section" className="container-x py-16 md:py-20">
-    <Reveal>
-      <div className="flex items-end justify-between flex-wrap gap-4 mb-10 md:mb-14">
-        <div className="max-w-2xl">
-          <div className="font-mono text-xs uppercase tracking-widest text-[hsl(var(--muted-foreground))] mb-3">Selected work</div>
-          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
-            Problems solved, <span className="italic-accent text-[hsl(var(--accent))]">metrics moved</span>.
-          </h2>
+const Work = () => {
+  const [activeId, setActiveId] = useState(null);
+  const active = CASE_STUDIES.find(cs => cs.id === activeId);
+  return (
+    <section id="work" data-testid="work-section" className="container-x py-16 md:py-20">
+      <Reveal>
+        <div className="flex items-end justify-between flex-wrap gap-4 mb-10 md:mb-14">
+          <div className="max-w-2xl">
+            <div className="font-mono text-xs uppercase tracking-widest text-[hsl(var(--muted-foreground))] mb-3">Selected work</div>
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
+              Problems solved, <span className="italic-accent text-[hsl(var(--accent))]">metrics moved</span>.
+            </h2>
+          </div>
         </div>
-      </div>
-    </Reveal>
-    <div className="space-y-4 md:space-y-6">
-      {CASE_STUDIES.map((cs, i) => (
-        <Reveal key={cs.id} delay={i * 0.06}>
-          <motion.a href={cs.href} target="_blank" rel="noopener noreferrer" data-testid={`case-${cs.id}`}
-             onClick={() => track("project_click", cs.id, { source: "case_study" })}
-             whileHover={{ y: -3 }}
-             transition={{ type: "spring", stiffness: 260, damping: 22 }}
-             className="group card-soft rounded-2xl p-6 md:p-8 block">
-            <div className="grid md:grid-cols-12 gap-6 md:gap-8">
-              <div className="md:col-span-5">
-                <div className="flex items-baseline gap-3 mb-3">
-                  <span className="text-outline font-serif text-4xl md:text-5xl font-bold">{String(i + 1).padStart(2, "0")}</span>
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-[hsl(var(--muted-foreground))]">Case</span>
-                </div>
-                <h3 className="font-serif text-2xl md:text-3xl font-semibold leading-tight mb-2 group-hover:text-[hsl(var(--accent))] transition-colors">{cs.title}</h3>
-                <div className="text-xs font-mono text-[hsl(var(--muted-foreground))] mb-4">{cs.role}</div>
-                <div className="flex flex-wrap gap-1.5">
-                  {cs.stack.map(s => (
-                    <span key={s} className="inline-block text-[11px] font-mono px-2.5 py-1 rounded-full bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))]">{s}</span>
-                  ))}
-                </div>
-              </div>
-              <div className="md:col-span-7 space-y-3 text-sm md:text-base">
-                <div>
-                  <div className="text-[10px] font-mono uppercase tracking-widest text-[hsl(var(--muted-foreground))] mb-1">Problem</div>
-                  <p className="leading-relaxed">{cs.problem}</p>
-                </div>
-                <div>
-                  <div className="text-[10px] font-mono uppercase tracking-widest text-[hsl(var(--muted-foreground))] mb-1">Action</div>
-                  <p className="leading-relaxed">{cs.action}</p>
-                </div>
-                <div>
-                  <div className="text-[10px] font-mono uppercase tracking-widest text-[hsl(var(--muted-foreground))] mb-1.5">Result</div>
-                  <ul className="grid sm:grid-cols-2 gap-x-4 gap-y-1.5">
-                    {cs.result.map((r, ri) => (
-                      <li key={ri} className="flex items-start gap-2 text-sm">
-                        <TrendingUp size={14} className="text-[hsl(var(--accent))] mt-0.5 shrink-0"/>
-                        <span>{r}</span>
-                      </li>
+      </Reveal>
+      <div className="space-y-4 md:space-y-6">
+        {CASE_STUDIES.map((cs, i) => {
+          const hasDetails = !!cs.details;
+          const CardTag = hasDetails ? motion.button : motion.a;
+          const cardProps = hasDetails
+            ? { type: "button", onClick: () => { setActiveId(cs.id); track("case_study_open", cs.id); } }
+            : { href: cs.href, target: "_blank", rel: "noopener noreferrer", onClick: () => track("project_click", cs.id, { source: "case_study" }) };
+          return (
+          <Reveal key={cs.id} delay={i * 0.06}>
+            <CardTag data-testid={`case-${cs.id}`}
+               whileHover={{ y: -3 }}
+               transition={{ type: "spring", stiffness: 260, damping: 22 }}
+               className="group card-soft rounded-2xl p-6 md:p-8 block w-full text-left"
+               {...cardProps}>
+              <div className="grid md:grid-cols-12 gap-6 md:gap-8">
+                <div className="md:col-span-5">
+                  <div className="flex items-baseline gap-3 mb-3">
+                    <span className="text-outline font-serif text-4xl md:text-5xl font-bold">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-[hsl(var(--muted-foreground))]">Case</span>
+                  </div>
+                  <h3 className="font-serif text-2xl md:text-3xl font-semibold leading-tight mb-2 group-hover:text-[hsl(var(--accent))] transition-colors">{cs.title}</h3>
+                  <div className="text-xs font-mono text-[hsl(var(--muted-foreground))] mb-4">{cs.role}</div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {cs.stack.map(s => (
+                      <span key={s} className="inline-block text-[11px] font-mono px-2.5 py-1 rounded-full bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))]">{s}</span>
                     ))}
-                  </ul>
+                  </div>
                 </div>
-                <div className="pt-2">
-                  <span className="inline-flex items-center gap-1.5 text-xs font-mono text-[hsl(var(--accent))]">
-                    View details <ArrowUpRight size={12} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"/>
-                  </span>
+                <div className="md:col-span-7 space-y-3 text-sm md:text-base">
+                  <div>
+                    <div className="text-[10px] font-mono uppercase tracking-widest text-[hsl(var(--muted-foreground))] mb-1">Problem</div>
+                    <p className="leading-relaxed">{cs.problem}</p>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-mono uppercase tracking-widest text-[hsl(var(--muted-foreground))] mb-1">Action</div>
+                    <p className="leading-relaxed">{cs.action}</p>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-mono uppercase tracking-widest text-[hsl(var(--muted-foreground))] mb-1.5">Result</div>
+                    <ul className="grid sm:grid-cols-2 gap-x-4 gap-y-1.5">
+                      {cs.result.map((r, ri) => (
+                        <li key={ri} className="flex items-start gap-2 text-sm">
+                          <TrendingUp size={14} className="text-[hsl(var(--accent))] mt-0.5 shrink-0"/>
+                          <span>{r}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="pt-2">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-mono text-[hsl(var(--accent))]">
+                      {hasDetails ? "View case study" : "View details"} <ArrowUpRight size={12} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"/>
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.a>
-        </Reveal>
-      ))}
-    </div>
-    <div className="mt-8 text-sm text-[hsl(var(--muted-foreground))]">
-      More projects on <a href="https://github.com/AbhishekCbanaj" target="_blank" rel="noopener noreferrer"
-                          onClick={() => track("external_click", "github", { source: "work_footer" })}
-                          className="link-underline text-[hsl(var(--foreground))]">GitHub</a>.
-    </div>
-  </section>
-);
+            </CardTag>
+          </Reveal>
+          );
+        })}
+      </div>
+      <div className="mt-8 text-sm text-[hsl(var(--muted-foreground))]">
+        More projects on <a href="https://github.com/AbhishekCbanaj" target="_blank" rel="noopener noreferrer"
+                            onClick={() => track("external_click", "github", { source: "work_footer" })}
+                            className="link-underline text-[hsl(var(--foreground))]">GitHub</a>.
+      </div>
+      <Dialog.Root open={!!active} onOpenChange={(o) => !o && setActiveId(null)}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" />
+          <Dialog.Content
+            data-testid="case-study-modal"
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[92vw] max-w-2xl max-h-[85vh] overflow-y-auto card-soft rounded-2xl p-6 md:p-8 focus:outline-none">
+            {active && active.details && (
+              <>
+                <div className="flex items-start justify-between gap-4 mb-5">
+                  <div>
+                    <Dialog.Title className="font-serif text-2xl md:text-3xl font-semibold">{active.title}</Dialog.Title>
+                    <div className="text-xs font-mono text-[hsl(var(--muted-foreground))] mt-1">{active.role}</div>
+                  </div>
+                  <Dialog.Close data-testid="case-study-modal-close" aria-label="Close"
+                    className="btn-ghost inline-flex items-center justify-center w-9 h-9 rounded-full shrink-0">
+                    <X size={16}/>
+                  </Dialog.Close>
+                </div>
+                <div className="space-y-5 text-sm md:text-base">
+                  <div>
+                    <div className="text-[10px] font-mono uppercase tracking-widest text-[hsl(var(--muted-foreground))] mb-1.5">Context</div>
+                    <p className="leading-relaxed">{active.details.context}</p>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-mono uppercase tracking-widest text-[hsl(var(--muted-foreground))] mb-1.5">Approach</div>
+                    <ol className="space-y-2.5">
+                      {active.details.approach.map((step, si) => (
+                        <li key={si} className="flex items-start gap-3">
+                          <span className="font-mono text-xs text-[hsl(var(--accent))] mt-0.5 shrink-0">{String(si + 1).padStart(2, "0")}</span>
+                          <span className="leading-relaxed">{step}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-mono uppercase tracking-widest text-[hsl(var(--muted-foreground))] mb-1.5">Impact</div>
+                    <ul className="grid sm:grid-cols-2 gap-x-4 gap-y-1.5">
+                      {active.details.impact.map((r, ri) => (
+                        <li key={ri} className="flex items-start gap-2 text-sm">
+                          <TrendingUp size={14} className="text-[hsl(var(--accent))] mt-0.5 shrink-0"/>
+                          <span>{r}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {active.stack.map(s => (
+                      <span key={s} className="inline-block text-[11px] font-mono px-2.5 py-1 rounded-full bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))]">{s}</span>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+    </section>
+  );
+};
 
 // ================ EXPERIENCE ================
 const Experience = ({ experience }) => (
