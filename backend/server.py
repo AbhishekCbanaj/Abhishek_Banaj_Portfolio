@@ -161,6 +161,7 @@ PROFILE = {
     "name": "Abhishek Banaj",
     "location": "Bengaluru, Karnataka, India",
     "email": "abhishekbanaj01@gmail.com",
+    "phone": "+91 91725 33709",
     "github": "https://github.com/AbhishekCbanaj",
     "linkedin": "https://www.linkedin.com/in/abhishekbanaj/",
     "portfolio_legacy": "https://abhishekbanaj.netlify.app/",

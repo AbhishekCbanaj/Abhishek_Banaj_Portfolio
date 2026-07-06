@@ -8,7 +8,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import {
   Github, Linkedin, Mail, MapPin, Download, Send, Sun, Moon,
   ArrowUpRight, CheckCircle2, TrendingUp, Award, GraduationCap, Sparkles,
-  Zap, Globe, HelpCircle, X, Lock, RefreshCw, LogOut
+  Zap, Globe, HelpCircle, X, Lock, RefreshCw, LogOut, Phone
 } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -662,6 +662,10 @@ const Contact = ({ profile }) => {
           <div className="mt-6 space-y-2 text-sm">
             <a href={`mailto:${profile?.email}`} data-testid="contact-email" onClick={() => track("external_click", "email")}
                className="flex items-center gap-3 hover:text-[hsl(var(--accent))] link-underline"><Mail size={15}/> Email</a>
+            {profile?.phone && (
+              <a href={`tel:${profile.phone.replace(/\s+/g, "")}`} data-testid="contact-phone" onClick={() => track("external_click", "phone")}
+                 className="flex items-center gap-3 hover:text-[hsl(var(--accent))] link-underline"><Phone size={15}/> {profile.phone}</a>
+            )}
             <a href={profile?.linkedin} target="_blank" rel="noopener noreferrer" data-testid="contact-linkedin"
                onClick={() => track("external_click", "linkedin", { source: "contact" })}
                className="flex items-center gap-3 hover:text-[hsl(var(--accent))] link-underline"><Linkedin size={15}/> LinkedIn</a>
@@ -757,6 +761,7 @@ const Footer = ({ profile }) => (
         <a href={profile?.github} target="_blank" rel="noopener noreferrer" className="link-underline hover:text-[hsl(var(--foreground))]">GitHub</a>
         <a href={profile?.linkedin} target="_blank" rel="noopener noreferrer" className="link-underline hover:text-[hsl(var(--foreground))]">LinkedIn</a>
         <a href={`mailto:${profile?.email}`} className="link-underline hover:text-[hsl(var(--foreground))]">Email</a>
+        {profile?.phone && <a href={`tel:${profile.phone.replace(/\s+/g, "")}`} className="link-underline hover:text-[hsl(var(--foreground))]">{profile.phone}</a>}
         {profile?.resume_url && <a href={profile.resume_url} target="_blank" rel="noopener noreferrer" className="link-underline hover:text-[hsl(var(--foreground))]">Resume</a>}
       </div>
     </div>
