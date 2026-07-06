@@ -61,6 +61,8 @@ const AnimatedNumber = ({ value }) => {
     // If value contains only digits + %, animate. Otherwise display as-is.
     const match = String(value).match(/^([0-9.,–\-]+)([^0-9]*)$/);
     if (!match) { setDisplay(value); return; }
+    // A dash after the first character means a range (e.g. "6–10%"), not a sign — don't mangle it.
+    if (/[–-]/.test(match[1].slice(1))) { setDisplay(value); return; }
     const rawNum = match[1].replace(/[^\d.]/g, "");
     const num = parseFloat(rawNum);
     if (isNaN(num)) { setDisplay(value); return; }
