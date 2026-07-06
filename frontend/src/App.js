@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link, useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import { Toaster, toast } from "sonner";
 import { motion, useInView, useMotionValue, animate, AnimatePresence } from "framer-motion";
@@ -189,22 +189,54 @@ const CASE_STUDIES = [
   },
 ];
 
+const STATIC_PROFILE = {
+  name: "Abhishek Banaj",
+  github: "https://github.com/AbhishekCbanaj",
+  linkedin: "https://www.linkedin.com/in/abhishekbanaj/",
+  email: "abhishekbanaj01@gmail.com",
+};
+
+const BLOG_POSTS = [
+  {
+    slug: "loss-making-tiers-ltv-cac",
+    title: "The two pricing tiers nobody was watching",
+    dek: "A channel-level LTV/CAC breakdown at Practo surfaced two structurally loss-making tiers hiding inside a healthy-looking blended number.",
+    date: "2025-11-12",
+    readTime: "5 min read",
+    tags: ["Analytics", "LTV/CAC", "Practo"],
+    content: [
+      "When I joined Practo's Growth team, the topline numbers looked fine. Paid transactions were growing, blended CAC looked reasonable, and nobody was asking hard questions about unit economics. That's usually a sign you're not looking closely enough.",
+      "Practo prices differently across roughly five tiers, and each tier pulls users through different acquisition channels at different costs. Blended CAC across all of that can look healthy while individual pieces are quietly losing money. I wanted to know which pieces.",
+      "So I built LTV, CAC, and contribution-margin models broken out by tier, and matched acquisition cost to the channel that actually drove it, not just whichever channel got the last click. That distinction mattered: a user acquired cheaply through one channel but converting at a much lower rate than users from a pricier channel can still be the worse investment once you run the lifetime-value math.",
+      "Two tiers came out structurally loss-making. Not marginally negative, not \"give it time to mature\" negative. The math didn't work no matter how I adjusted the assumptions.",
+      "I handed the breakdown to Growth along with the channel-level detail behind it. They repriced and retargeted the two flagged tiers, and paid transactions went up 6–10% afterward.",
+      "The part I keep coming back to is how ordinary the fix was once the diagnosis was right. Nobody needed a clever growth hack. They needed someone to actually break the blended number apart and show where it was hiding.",
+    ],
+  },
+];
+
 // ================ NAV ================
-const Nav = ({ theme, toggle, resumeUrl }) => (
+const Nav = ({ theme, toggle, resumeUrl }) => {
+  const location = useLocation();
+  const isHome = location.pathname === "/";
+  const sectionHref = (hash) => (isHome ? hash : `/${hash}`);
+  return (
   <motion.nav
     initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
     transition={{ duration: 0.5, ease: [0.2, 0.9, 0.3, 1] }}
     data-testid="site-nav"
     className="sticky top-0 z-40 backdrop-blur-md bg-[hsl(var(--background))]/85 border-b border-border">
     <div className="container-x h-16 flex items-center justify-between">
-      <a href="#top" data-testid="nav-logo" className="font-serif text-xl font-bold tracking-tight link-underline">
+      <a href={sectionHref("#top")} data-testid="nav-logo" className="font-serif text-xl font-bold tracking-tight link-underline">
         Abhishek Banaj<span className="text-[hsl(var(--accent))]">.</span>
       </a>
       <div className="hidden md:flex items-center gap-8 text-sm">
         {[{href:"#work",label:"Work"},{href:"#experience",label:"Experience"},{href:"#skills",label:"Skills"},{href:"#contact",label:"Contact"}].map(l => (
-          <a key={l.href} href={l.href} data-testid={`nav-${l.label.toLowerCase()}`}
+          <a key={l.href} href={sectionHref(l.href)} data-testid={`nav-${l.label.toLowerCase()}`}
              className="text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] link-underline">{l.label}</a>
         ))}
+        <Link to="/blog" data-testid="nav-blog"
+           className="text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] link-underline">Blog</Link>
       </div>
       <div className="flex items-center gap-2">
         {resumeUrl && (
@@ -227,6 +259,8 @@ const Nav = ({ theme, toggle, resumeUrl }) => (
       </div>
     </div>
   </motion.nav>
+  );
+};
 );
 
 // ================ HERO ================
@@ -985,6 +1019,89 @@ const AnalyticsAdmin = () => {
   );
 };
 
+// ================ BLOG ================
+const BlogList = () => {
+  const [theme, toggleTheme] = useTheme();
+  useEffect(() => {
+    document.title = "Blog — Abhishek Banaj";
+    track("page_view", "blog");
+  }, []);
+  return (
+    <div>
+      <Nav theme={theme} toggle={toggleTheme} resumeUrl={undefined}/>
+      <section className="container-x py-16 md:py-24 min-h-[60vh]">
+        <Reveal>
+          <div className="max-w-2xl mb-12">
+            <div className="font-mono text-xs uppercase tracking-widest text-[hsl(var(--muted-foreground))] mb-3">Blog</div>
+            <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight">Notes from <span className="italic-accent text-[hsl(var(--accent))]">the work</span>.</h1>
+          </div>
+        </Reveal>
+        <div className="space-y-4 md:space-y-6">
+          {BLOG_POSTS.map((post, i) => (
+            <Reveal key={post.slug} delay={i * 0.06}>
+              <Link to={`/blog/${post.slug}`} data-testid={`blog-card-${post.slug}`} onClick={() => track("blog_open", post.slug)}
+                 className="group card-soft rounded-2xl p-6 md:p-8 block">
+                <div className="font-mono text-xs text-[hsl(var(--muted-foreground))] mb-2">
+                  {new Date(post.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · {post.readTime}
+                </div>
+                <h2 className="font-serif text-2xl md:text-3xl font-semibold leading-tight mb-2 group-hover:text-[hsl(var(--accent))] transition-colors">{post.title}</h2>
+                <p className="text-[hsl(var(--muted-foreground))] text-sm md:text-base">{post.dek}</p>
+                <div className="flex flex-wrap gap-1.5 mt-4">
+                  {post.tags.map(t => (
+                    <span key={t} className="inline-block text-[11px] font-mono px-2.5 py-1 rounded-full bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))]">{t}</span>
+                  ))}
+                </div>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+      <Footer profile={STATIC_PROFILE}/>
+    </div>
+  );
+};
+
+const BlogPost = () => {
+  const { slug } = useParams();
+  const [theme, toggleTheme] = useTheme();
+  const post = BLOG_POSTS.find(p => p.slug === slug);
+  useEffect(() => {
+    document.title = post ? `${post.title} — Abhishek Banaj` : "Post not found — Abhishek Banaj";
+    track("page_view", post ? `blog_${slug}` : "blog_404");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug]);
+  return (
+    <div>
+      <Nav theme={theme} toggle={toggleTheme} resumeUrl={undefined}/>
+      <article className="container-x py-16 md:py-24 max-w-2xl min-h-[60vh]">
+        <Link to="/blog" data-testid="blog-back-link"
+           className="inline-flex items-center gap-1.5 text-xs font-mono text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] link-underline mb-8">
+          ← All posts
+        </Link>
+        {post ? (
+          <>
+            <div className="font-mono text-xs uppercase tracking-widest text-[hsl(var(--muted-foreground))] mb-3">
+              {new Date(post.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · {post.readTime}
+            </div>
+            <h1 className="font-serif text-3xl md:text-5xl font-bold leading-tight mb-6">{post.title}</h1>
+            <div className="flex flex-wrap gap-1.5 mb-10">
+              {post.tags.map(t => (
+                <span key={t} className="inline-block text-[11px] font-mono px-2.5 py-1 rounded-full bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))]">{t}</span>
+              ))}
+            </div>
+            <div className="space-y-5 text-base md:text-lg leading-relaxed">
+              {post.content.map((p, i) => <p key={i}>{p}</p>)}
+            </div>
+          </>
+        ) : (
+          <div className="font-serif text-2xl">Post not found.</div>
+        )}
+      </article>
+      <Footer profile={STATIC_PROFILE}/>
+    </div>
+  );
+};
+
 function App() {
   return (
     <div className="App">
@@ -993,6 +1110,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home/>}/>
           <Route path="/admin" element={<AnalyticsAdmin/>}/>
+          <Route path="/blog" element={<BlogList/>}/>
+          <Route path="/blog/:slug" element={<BlogPost/>}/>
         </Routes>
       </BrowserRouter>
     </div>
