@@ -164,6 +164,7 @@ PROFILE = {
     "phone": "+91 91725 33709",
     "github": "https://github.com/AbhishekCbanaj",
     "linkedin": "https://www.linkedin.com/in/abhishekbanaj/",
+    "calendly": "https://calendly.com/abhishekbanaj01/30min",
     "portfolio_legacy": "https://abhishekbanaj.netlify.app/",
     "avatar_url": "https://api.dicebear.com/9.x/notionists/svg?seed=AbhishekBanaj&backgroundColor=c0aede,b6e3f4,ffd5dc&radius=20",
     "headline": "Business Analyst @ Practo · Data · Analytics · AI",

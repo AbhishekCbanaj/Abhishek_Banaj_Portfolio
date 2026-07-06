@@ -8,7 +8,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import {
   Github, Linkedin, Mail, MapPin, Download, Send, Sun, Moon,
   ArrowUpRight, CheckCircle2, TrendingUp, Award, GraduationCap, Sparkles,
-  Zap, Globe, HelpCircle, X, Lock, RefreshCw, LogOut, Phone
+  Zap, Globe, HelpCircle, X, Lock, RefreshCw, LogOut, Phone, Calendar
 } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -278,6 +278,13 @@ const Hero = ({ profile }) => (
                data-testid="hero-resume-btn" onClick={() => track("resume_download", "hero")}
                className="btn-primary inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium">
               <Download size={15}/> Download Resume
+            </a>
+          )}
+          {profile?.calendly && (
+            <a href={profile.calendly} target="_blank" rel="noopener noreferrer"
+               data-testid="hero-calendly-btn" onClick={() => track("external_click", "calendly", { source: "hero" })}
+               className="btn-primary inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium">
+              <Calendar size={15}/> Book a call
             </a>
           )}
           <a href="#contact" data-testid="hero-contact-btn"
@@ -651,6 +658,13 @@ const Contact = ({ profile }) => {
           <p className="text-[hsl(var(--muted-foreground))] mt-4 max-w-md text-sm md:text-base">
             Hiring for Analytics, Business Analyst, Data Scientist, or AI Engineer roles? I reply within 24 hours.
           </p>
+          {profile?.calendly && (
+            <a href={profile.calendly} target="_blank" rel="noopener noreferrer" data-testid="contact-calendly"
+               onClick={() => track("external_click", "calendly", { source: "contact" })}
+               className="btn-primary inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium mt-5">
+              <Calendar size={14}/> Book a call
+            </a>
+          )}
           <div className="mt-4 flex flex-wrap gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--accent))]/30 bg-[hsl(var(--accent))]/10 px-3 py-1 text-xs font-medium text-[hsl(var(--accent))]">
               <Zap size={12}/> Immediate Joiner
