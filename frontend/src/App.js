@@ -95,13 +95,13 @@ const CASE_STUDIES = [
     stack: ["SQL", "Redshift", "GA4", "Python", "Cohort", "A/B Testing"],
     href: "https://www.linkedin.com/in/abhishekbanaj/",
     details: {
-      context: "Practo is a 4M+ user healthtech platform. Channel-level unit economics were unclear — some acquisition channels were quietly loss-making — and a 34% drop in payment completions had gone unexplained.",
+      context: "Practo is a 4M+ user healthtech platform. Channel-level unit economics were unclear (some acquisition channels were quietly loss-making), and a 34% drop in payment completions had gone unexplained.",
       approach: [
         "Built LTV, CAC, and contribution-margin models across 5 pricing tiers to isolate acquisition cost by channel, and flagged 2 tiers that were structurally loss-making.",
         "Segmented 500K+ payment sessions by device and network quality to trace the 34% payment drop to an SDK bug affecting low-connectivity users.",
         "Ran 90-day cohort retention analysis across 4M+ users, mapping drop-off by segment × day-range.",
         "Validated SEM spend by comparing click-to-install ratios across 3 campaigns to catch fraudulent spend.",
-        "Rewrote 4 Redshift queries — removing full-table scans and redundant joins — and automated the resulting RCA report.",
+        "Rewrote 4 Redshift queries, removing full-table scans and redundant joins, and automated the resulting RCA report.",
       ],
       impact: [
         "Growth repriced/retargeted the 2 flagged tiers, lifting paid transactions 6–10%",
@@ -116,7 +116,7 @@ const CASE_STUDIES = [
     id: "pr-reviewer",
     title: "Practo · AI PR Reviewer",
     role: "Personal Project · Built & Deployed at Practo",
-    problem: "Every PR needed a human to manually catch the same recurring issues — unhandled errors, unsafe SQL, oversized functions — before it could be approved.",
+    problem: "Every PR needed a human to manually catch the same recurring issues (unhandled errors, unsafe SQL, oversized functions) before it could be approved.",
     action: "Built an event-driven system with four parallel LangGraph agents (static analysis, security, architecture, style) that review every PR the moment it's opened, then rolled it out on Practo's existing workflow infra so no team had to run a server.",
     result: [
       "Automated first-pass review on every PR before a human opens it",
@@ -127,10 +127,10 @@ const CASE_STUDIES = [
     stack: ["Python", "LangGraph", "FastAPI", "Celery", "Redis", "PostgreSQL", "Prefect"],
     href: "https://github.com/AbhishekCbanaj/ai-pr-reviewer",
     details: {
-      context: "Every pull request needed a human reviewer to manually catch the same recurring categories of issues — unhandled errors, SQL built from string concatenation, functions that had grown too large — before it could be approved. That first pass ate reviewer time on every single PR, regardless of the team or repo.",
+      context: "Every pull request needed a human reviewer to manually catch the same recurring categories of issues: unhandled errors, SQL built from string concatenation, functions that had grown too large. That first pass ate reviewer time on every single PR, regardless of the team or repo.",
       approach: [
         "Built an event-driven pipeline: GitHub fires a webhook on PR open/update, a gateway verifies the signature, and the payload is queued as a job.",
-        "Fanned the diff out to four parallel LangGraph agents — static analysis, security (OWASP Top 10), architecture, and code style — so all checks run concurrently instead of one long sequential pass.",
+        "Fanned the diff out to four parallel LangGraph agents (static analysis, security via OWASP Top 10, architecture, and code style) so all checks run concurrently instead of one long sequential pass.",
         "Deduplicated and capped findings per file before posting, so the bot's PR comments stay signal, not noise.",
         "Added a checklist-based auto-approval path: once a PR satisfies a team-defined checklist, it's approved automatically, leaving the human reviewer to spot-check the actual logic rather than the boilerplate.",
         "Added a learning step that mines merged PRs for each repo's own conventions, so review feedback adapts to how each team actually writes code.",
@@ -260,7 +260,7 @@ const Hero = ({ profile }) => (
         <motion.p data-testid="hero-value-prop"
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.55 }}
           className="text-lg md:text-xl text-[hsl(var(--muted-foreground))] max-w-2xl leading-relaxed mb-3">
-          I turn <span className="marker text-[hsl(var(--foreground))] font-medium">messy data into growth</span>. Recently at Practo: unlocked 6–10% growth via LTV/CAC modeling, saved ₹12L/month by killing SEM fraud, and cut a 4-minute RCA query to 45 seconds.
+          I turn <span className="marker text-[hsl(var(--foreground))] font-medium">messy data into decisions</span>. At Practo: lifted paid transactions 6–10% via LTV/CAC modeling, stopped ₹12L/month in SEM fraud, and cut a 4-minute RCA query down to 45 seconds.
         </motion.p>
         <motion.p
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.7 }}

@@ -166,7 +166,7 @@ PROFILE = {
     "portfolio_legacy": "https://abhishekbanaj.netlify.app/",
     "avatar_url": "https://api.dicebear.com/9.x/notionists/svg?seed=AbhishekBanaj&backgroundColor=c0aede,b6e3f4,ffd5dc&radius=20",
     "headline": "Business Analyst @ Practo · Data · Analytics · AI",
-    "value_prop": "I turn messy data into growth. Recently at Practo: unlocked 6–10% growth via LTV/CAC modeling, saved ₹12L/month by killing SEM fraud, and cut a 4-minute RCA query to 45 seconds.",
+    "value_prop": "I turn messy data into decisions. At Practo: lifted paid transactions 6–10% via LTV/CAC modeling, stopped ₹12L/month in SEM fraud, and cut a 4-minute RCA query down to 45 seconds.",
     "summary": (
         "MSc Data Science (REVA, 8.35 GPA). Business Analyst @ Practo shipping "
         "revenue-moving analytics on 4M+ users. Fluent in SQL, Python, Power BI, "
@@ -182,15 +182,15 @@ PROFILE = {
     "why_hire_me": [
         {
             "title": "Business impact first",
-            "body": "Every project shipped at Practo & InLighn moved a real metric — retention, conversion, cost, or cycle time. I optimise for outcomes, not dashboards.",
+            "body": "Every project I've shipped at Practo and InLighn moved a real metric: retention, conversion, cost, or cycle time. If a dashboard looks nice but nothing downstream changes, I don't count it as done.",
         },
         {
             "title": "Full analytics stack",
             "body": "SQL (CTEs, window functions, Redshift tuning) · Python (Pandas, Scikit-learn) · Power BI (DAX + modeling) · GA4 · A/B testing · cohort & funnel analysis · RCA.",
         },
         {
-            "title": "AI-native mindset",
-            "body": "Built LLM+SQL agents that dropped ad-hoc turnaround from 24h to 5min. Comfortable pairing traditional analytics with LangChain, OpenAI, and RAG when it wins.",
+            "title": "Uses AI tools where they help",
+            "body": "Built LLM+SQL agents that dropped ad-hoc turnaround from 24h to 5min. Comfortable pairing traditional analytics with LangChain, OpenAI, and RAG when it's actually the better tool for the job.",
         },
     ],
     "roles_open_to": ["Business Analyst", "Data Analyst", "Data Scientist", "Analytics Engineer", "Product Analyst"],
@@ -212,11 +212,11 @@ EXPERIENCE = [
         "period": "Sep 2025 – Present",
         "current": True,
         "bullets": [
-            "Built LTV, CAC & contribution-margin models across 5 tiers; isolated acquisition cost by channel and flagged 2 loss-making tiers — Growth team repriced/retargeted and lifted paid transactions by 6–10%.",
-            "Diagnosed a 34% payment drop by segmenting 500K+ sessions by device & network quality — traced to an SDK bug on low-connectivity users; Product shipped a fix in 2 weeks and recovered conversion.",
-            "Analyzed 90-day cohort retention for 4M+ users and mapped drop-off by segment × day-range — CRM replaced 2 blanket campaigns with 5 targeted ones, improving 30-day retention ~12%.",
-            "Validated SEM spend by comparing click-to-install ratios across 3 campaigns — flagged ₹12L/month in fraudulent spend and paused all 3.",
-            "Rewrote 4 Redshift queries (removed full-table scans + redundant joins) — cut execution from 3–4 min to 45s, automated the RCA report, saved 6+ analyst-hours/week.",
+            "Built LTV, CAC, and contribution-margin models across 5 tiers, isolated acquisition cost by channel, and flagged 2 loss-making tiers; Growth repriced and retargeted those tiers, lifting paid transactions 6–10%.",
+            "Diagnosed a 34% payment drop by segmenting 500K+ sessions by device and network quality, tracing it to an SDK bug affecting low-connectivity users; Product shipped a fix in 2 weeks and recovered the lost conversion.",
+            "Analyzed 90-day cohort retention for 4M+ users and mapped drop-off by segment and day-range; CRM used it to replace 2 blanket campaigns with 5 targeted ones, improving 30-day retention about 12%.",
+            "Validated SEM spend by comparing click-to-install ratios across 3 campaigns, flagged ₹12L/month in fraudulent spend, and paused all 3.",
+            "Rewrote 4 Redshift queries to remove full-table scans and redundant joins, cutting execution from 3–4 minutes to 45 seconds; automated the RCA report and saved 6+ analyst-hours a week.",
         ],
     },
     {
@@ -226,9 +226,9 @@ EXPERIENCE = [
         "period": "Mar 2025 – Jun 2025",
         "current": False,
         "bullets": [
-            "Built a SQL pipeline with validation checks to automate a 15+ hr/week manual KPI process — cut delivery time by 60% and reduced recurring data errors.",
-            "Developed 5 self-serve dashboards in Power BI & Excel — reduced ad-hoc requests by 70% in the first month.",
-            "Audited SQL models after revenue reporting discrepancies, identified drifted filters and aligned teams to unified definitions — removed 6 hrs/week of reconciliation.",
+            "Built a SQL pipeline with validation checks to automate a manual KPI process that took 15+ hours a week, cutting delivery time by 60% and reducing recurring data errors.",
+            "Developed 5 self-serve dashboards in Power BI and Excel, which cut ad-hoc requests by 70% in the first month.",
+            "Audited SQL models after revenue reporting discrepancies, found the drifted filters causing them, and got teams onto unified definitions, removing 6 hours/week of reconciliation work.",
         ],
     },
 ]
@@ -315,8 +315,8 @@ FEATURED_PROJECTS = [
         "name": "Natural Language Analytics Tool",
         "description": (
             "LLM-powered tool (LangChain + OpenAI) that converts plain-English questions into "
-            "SQL — 20+ query types, schema validation to reject malformed outputs. Cut ad-hoc "
-            "turnaround from 24 hours to 5 minutes for non-technical teams."
+            "SQL, covering 20+ query types with schema validation to reject malformed outputs. "
+            "Cut ad-hoc turnaround from 24 hours to 5 minutes for non-technical teams."
         ),
         "html_url": "https://github.com/AbhishekCbanaj/AI-Powered-Data-Analysis-Assistant-Using-Natural-Language-and-LLMs",
         "homepage": "",
