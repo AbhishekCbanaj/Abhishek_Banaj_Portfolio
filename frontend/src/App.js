@@ -196,6 +196,12 @@ const STATIC_PROFILE = {
   email: "abhishekbanaj01@gmail.com",
 };
 
+const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const formatBlogDate = (isoDate) => {
+  const [y, m, d] = isoDate.split("-").map(Number);
+  return `${MONTH_NAMES[m - 1]} ${d}, ${y}`;
+};
+
 const BLOG_POSTS = [
   {
     slug: "loss-making-tiers-ltv-cac",
@@ -1041,7 +1047,7 @@ const BlogList = () => {
               <Link to={`/blog/${post.slug}`} data-testid={`blog-card-${post.slug}`} onClick={() => track("blog_open", post.slug)}
                  className="group card-soft rounded-2xl p-6 md:p-8 block">
                 <div className="font-mono text-xs text-[hsl(var(--muted-foreground))] mb-2">
-                  {new Date(post.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · {post.readTime}
+                  {formatBlogDate(post.date)} · {post.readTime}
                 </div>
                 <h2 className="font-serif text-2xl md:text-3xl font-semibold leading-tight mb-2 group-hover:text-[hsl(var(--accent))] transition-colors">{post.title}</h2>
                 <p className="text-[hsl(var(--muted-foreground))] text-sm md:text-base">{post.dek}</p>
@@ -1080,7 +1086,7 @@ const BlogPost = () => {
         {post ? (
           <>
             <div className="font-mono text-xs uppercase tracking-widest text-[hsl(var(--muted-foreground))] mb-3">
-              {new Date(post.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · {post.readTime}
+              {formatBlogDate(post.date)} · {post.readTime}
             </div>
             <h1 className="font-serif text-3xl md:text-5xl font-bold leading-tight mb-6">{post.title}</h1>
             <div className="flex flex-wrap gap-1.5 mb-10">
