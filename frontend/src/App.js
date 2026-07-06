@@ -261,7 +261,6 @@ const Nav = ({ theme, toggle, resumeUrl }) => {
   </motion.nav>
   );
 };
-);
 
 // ================ HERO ================
 const Hero = ({ profile }) => (
