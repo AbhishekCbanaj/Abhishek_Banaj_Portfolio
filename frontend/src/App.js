@@ -113,6 +113,38 @@ const CASE_STUDIES = [
     },
   },
   {
+    id: "pr-reviewer",
+    title: "Practo · AI PR Reviewer",
+    role: "Personal Project · Built & Deployed at Practo",
+    problem: "Every PR needed a human to manually catch the same recurring issues — unhandled errors, unsafe SQL, oversized functions — before it could be approved.",
+    action: "Built an event-driven system with four parallel LangGraph agents (static analysis, security, architecture, style) that review every PR the moment it's opened, then rolled it out on Practo's existing workflow infra so no team had to run a server.",
+    result: [
+      "Automated first-pass review on every PR before a human opens it",
+      "Checklist-driven auto-approval for PRs that satisfy a team's own criteria",
+      "Learns each repo's conventions from merged-PR history over time",
+      "Rolled out org-wide with zero new infrastructure for any team",
+    ],
+    stack: ["Python", "LangGraph", "FastAPI", "Celery", "Redis", "PostgreSQL", "Prefect"],
+    href: "https://github.com/AbhishekCbanaj/ai-pr-reviewer",
+    details: {
+      context: "Every pull request needed a human reviewer to manually catch the same recurring categories of issues — unhandled errors, SQL built from string concatenation, functions that had grown too large — before it could be approved. That first pass ate reviewer time on every single PR, regardless of the team or repo.",
+      approach: [
+        "Built an event-driven pipeline: GitHub fires a webhook on PR open/update, a gateway verifies the signature, and the payload is queued as a job.",
+        "Fanned the diff out to four parallel LangGraph agents — static analysis, security (OWASP Top 10), architecture, and code style — so all checks run concurrently instead of one long sequential pass.",
+        "Deduplicated and capped findings per file before posting, so the bot's PR comments stay signal, not noise.",
+        "Added a checklist-based auto-approval path: once a PR satisfies a team-defined checklist, it's approved automatically, leaving the human reviewer to spot-check the actual logic rather than the boilerplate.",
+        "Added a learning step that mines merged PRs for each repo's own conventions, so review feedback adapts to how each team actually writes code.",
+        "Prototyped and tested the whole stack locally first (Docker Compose, fake LLM/GitHub clients, Prometheus + Grafana), then deployed it on Practo's existing Bacron/Prefect workflow infrastructure instead of a dedicated server, so no team had to provision or maintain anything to use it.",
+      ],
+      impact: [
+        "Every PR gets an automated first-pass review before a human ever opens it",
+        "Checklist-driven auto-approval removes repetitive review overhead from clean PRs",
+        "Rolled out without asking any team to run new infrastructure",
+        "Review feedback improves over time as the learner mines each repo's merged-PR history",
+      ],
+    },
+  },
+  {
     id: "inlighn",
     title: "InLighn Tech · KPI Automation",
     role: "Data Analyst Intern · Mar – Jun 2025",
@@ -458,6 +490,13 @@ const Work = () => {
                       <span key={s} className="inline-block text-[11px] font-mono px-2.5 py-1 rounded-full bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))]">{s}</span>
                     ))}
                   </div>
+                  {active.href && (
+                    <a href={active.href} target="_blank" rel="noopener noreferrer" data-testid="case-study-modal-repo-link"
+                       onClick={() => track("external_click", "repo", { source: "case_study_modal", id: active.id })}
+                       className="inline-flex items-center gap-1.5 text-xs font-mono text-[hsl(var(--accent))] link-underline pt-1">
+                      <Github size={13}/> View repository <ArrowUpRight size={12}/>
+                    </a>
+                  )}
                 </div>
               </>
             )}
