@@ -85,7 +85,7 @@ const CASE_STUDIES = [
   {
     id: "practo",
     title: "Practo · Growth Analytics",
-    role: "Business Analyst Intern · Sep 2025 – Present",
+    role: "Business Analyst Intern · Sep 2025 – Jun 2026",
     problem: "4M+ user healthtech platform with unclear channel economics and a 34% payment drop.",
     action: "Built LTV/CAC/margin models across 5 tiers, ran 90-day cohort retention, segmented 500K sessions by device × network quality, rewrote Redshift RCA queries.",
     result: [
@@ -111,6 +111,60 @@ const CASE_STUDIES = [
         "CRM replaced 2 blanket campaigns with 5 targeted ones, improving 30-day retention ~12%",
         "₹12L/month in fraudulent SEM spend caught and paused",
         "RCA query time cut from 3–4 min to 45 sec, saving 6+ analyst-hours/week",
+      ],
+    },
+  },
+  {
+    id: "credit-card-dashboard",
+    title: "Credit Card Transaction Analytics Dashboard",
+    role: "Personal Project · Data Analyst",
+    problem: "Raw transaction-level data with no visibility into activation, delinquency, or revenue mix by card type and geography.",
+    action: "Modeled raw SQL transaction data into a Power BI dashboard covering activation, delinquency, and revenue segmentation.",
+    result: [
+      "$45.5M YTD transaction volume tracked",
+      "57.5% card activation rate surfaced",
+      "6.06% delinquency rate isolated",
+      "$56.5M YTD revenue segmented by card type, geography, and spend category",
+    ],
+    stack: ["SQL", "Power BI", "DAX", "Data Modeling"],
+    details: {
+      context: "Card-issuing businesses need to see past a single blended number to know which cards are actually getting used, which accounts are at risk, and where revenue is really coming from.",
+      approach: [
+        "Modeled raw SQL transaction data into a star schema suited for Power BI reporting.",
+        "Built dashboard views for activation rate, delinquency rate, and revenue mix.",
+        "Segmented $56.5M in YTD revenue by card type, geography, and spend category to surface where revenue concentration and risk actually sat.",
+      ],
+      impact: [
+        "$45.5M in YTD transaction volume made visible in one dashboard",
+        "57.5% activation rate and 6.06% delinquency rate surfaced as trackable metrics",
+        "Revenue segmentation gave a clear view of which card types/geographies drove the $56.5M in YTD revenue",
+      ],
+    },
+  },
+  {
+    id: "bank-loan-portfolio",
+    title: "Bank Loan Portfolio Report",
+    role: "Personal Project · Data Analyst",
+    problem: "38.6K loan applications with no consolidated view of funded amount, bad-loan concentration, or rate/DTI trends.",
+    action: "Built a Power BI + SQL loan portfolio dashboard covering applications, funded amount, and risk segmentation.",
+    result: [
+      "38.6K applications tracked",
+      "$435.8M in funded amount consolidated",
+      "14.1% bad-loan segment isolated",
+      "Interest rate & DTI trends modeled",
+    ],
+    stack: ["Power BI", "Excel", "SQL"],
+    details: {
+      context: "A lending portfolio spanning 38.6K applications and $435.8M in funded amount had no single report tying application volume, funding, and loan quality together.",
+      approach: [
+        "Consolidated loan application and funding data into a single SQL-backed model.",
+        "Built Power BI views for application volume, total funded amount, and loan status breakdown.",
+        "Isolated the bad-loan segment (14.1% of the book) and modeled how interest rate and debt-to-income trends related to it.",
+      ],
+      impact: [
+        "$435.8M in funded amount made visible across 38.6K applications in one report",
+        "14.1% bad-loan segment isolated for risk review",
+        "Interest rate and DTI trend modeling gave a starting point for tightening underwriting criteria",
       ],
     },
   },
@@ -147,29 +201,30 @@ const CASE_STUDIES = [
     },
   },
   {
-    id: "inlighn",
-    title: "InLighn Tech · KPI Automation",
-    role: "Data Analyst Intern · Mar – Jun 2025",
-    problem: "15+ hrs/week burned on manual KPI reporting; ad-hoc requests overwhelming the team.",
-    action: "Built a SQL pipeline with validation checks, shipped 5 self-serve Power BI + Excel dashboards, audited revenue models to unify definitions.",
+    id: "shameem",
+    title: "Shameem Arts & Handicrafts · Sales Reporting",
+    role: "MIS Executive (Remote) · Apr 2023 – Jul 2025",
+    problem: "Sales and stock data for 500+ SKUs across 2–3 outlets compiled manually, taking half a day per report with no live view of performance.",
+    action: "Taught myself Power BI to build the company's first live dashboards, wrote SQL/Excel/Sheets pipelines to clean and pull sales and stock data, and ran an A/B test on promotional offers.",
     result: [
-      "60% faster KPI delivery",
-      "70% drop in ad-hoc requests (month 1)",
-      "6 hrs/week reconciliation eliminated",
+      "6+ daily sales reports a week automated",
+      "500+ SKUs across 2–3 outlets covered",
+      "~Half a day of manual compilation replaced with live dashboards",
+      "A/B test identified the winning promotional offer",
     ],
-    stack: ["SQL", "Power BI", "Excel", "DAX", "Data Modeling"],
-    href: "https://www.linkedin.com/in/abhishekbanaj/",
+    stack: ["SQL", "Power BI", "Excel", "Google Sheets", "A/B Testing"],
     details: {
-      context: "InLighn Tech's team was burning 15+ hours a week on manual KPI reporting, and ad-hoc data requests were overwhelming the team's bandwidth.",
+      context: "A small retail business selling 500+ SKUs across 2–3 outlets had no live view of its own sales and stock performance — every report was compiled by hand, eating roughly half a day of work each time.",
       approach: [
-        "Built a SQL pipeline with validation checks to automate the manual KPI process.",
-        "Shipped 5 self-serve dashboards in Power BI and Excel so stakeholders could pull their own numbers instead of filing requests.",
-        "Audited SQL models after revenue reporting discrepancies surfaced, traced them to drifted filters, and aligned the team on unified metric definitions.",
+        "Taught myself Power BI from scratch to build the company's first live dashboards.",
+        "Wrote SQL queries and used Excel and Google Sheets to pull and clean sales and stock data across 500+ products.",
+        "Produced 6+ daily sales reports a week covering performance by product, category, and outlet.",
+        "Designed and ran an A/B test comparing two promotional offers to see which actually drove sales.",
       ],
       impact: [
-        "KPI delivery time cut by 60%",
-        "Ad-hoc requests dropped 70% within the first month",
-        "6 hours/week of reconciliation work eliminated",
+        "Replaced roughly half a day of manual report compilation with live, self-serve dashboards",
+        "Gave management a single view of performance across 500+ products and 2–3 outlets",
+        "The premium offer won the A/B test on sales and informed how later promotions were structured",
       ],
     },
   },
@@ -193,7 +248,7 @@ const STATIC_PROFILE = {
   name: "Abhishek Banaj",
   github: "https://github.com/AbhishekCbanaj",
   linkedin: "https://www.linkedin.com/in/abhishekbanaj/",
-  email: "abhishekbanaj01@gmail.com",
+  email: "Abhisshekbanaj09@gmail.com",
 };
 
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -284,7 +339,7 @@ const Hero = ({ profile }) => (
             <span className="absolute inset-0 rounded-full bg-emerald-500 opacity-75 animate-ping"/>
             <span className="relative rounded-full w-2 h-2 bg-emerald-600"/>
           </span>
-          <span data-testid="hero-availability">Open to Analytics · Data Science · AI roles</span>
+          <span data-testid="hero-availability">Open to Data Analyst · Business Analyst · AI roles</span>
         </motion.div>
 
         <h1 data-testid="hero-heading" className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-[5.2rem] font-bold leading-[1.02] tracking-tight mb-6">
@@ -776,7 +831,7 @@ const Contact = ({ profile }) => {
           <dl className="grid sm:grid-cols-2 gap-6">
             <div>
               <dt className="text-sm font-semibold">Total Years of Experience</dt>
-              <dd className="text-sm text-[hsl(var(--muted-foreground))] mt-1">1 year (Business Analyst &amp; Data Analyst internships)</dd>
+              <dd className="text-sm text-[hsl(var(--muted-foreground))] mt-1">1+ year (Business Analyst Intern @ Practo; MIS Executive @ Shameem Arts & Handicrafts)</dd>
             </div>
             <div>
               <dt className="text-sm font-semibold">Current CTC</dt>

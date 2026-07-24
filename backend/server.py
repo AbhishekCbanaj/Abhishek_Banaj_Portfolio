@@ -24,7 +24,7 @@ db = client[os.environ['DB_NAME']]
 # Resend email config
 RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
 SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
-OWNER_EMAIL = os.environ.get('OWNER_EMAIL', 'abhishekbanaj01@gmail.com')
+OWNER_EMAIL = os.environ.get('OWNER_EMAIL', 'Abhisshekbanaj09@gmail.com')
 RESUME_URL = os.environ.get('RESUME_URL', '')
 RESUME_DRIVE_URL = os.environ.get('RESUME_DRIVE_URL', '')
 ANALYTICS_TOKEN = os.environ.get('ANALYTICS_TOKEN', '')
@@ -160,20 +160,21 @@ async def fetch_github_repos() -> List[Dict[str, Any]]:
 PROFILE = {
     "name": "Abhishek Banaj",
     "location": "Bengaluru, Karnataka, India",
-    "email": "abhishekbanaj01@gmail.com",
+    "email": "Abhisshekbanaj09@gmail.com",
     "phone": "+91 91725 33709",
     "github": "https://github.com/AbhishekCbanaj",
     "linkedin": "https://www.linkedin.com/in/abhishekbanaj/",
     "calendly": "https://calendly.com/abhishekbanaj01/30min",
     "portfolio_legacy": "https://abhishekbanaj.netlify.app/",
     "avatar_url": "https://api.dicebear.com/9.x/notionists/svg?seed=AbhishekBanaj&backgroundColor=c0aede,b6e3f4,ffd5dc&radius=20",
-    "headline": "Business Analyst @ Practo · Data · Analytics · AI",
+    "headline": "Data Analyst & Business Analyst · Data · Analytics · AI",
     "value_prop": "I turn messy data into decisions. At Practo: lifted paid transactions 6–10% via LTV/CAC modeling, stopped ₹12L/month in SEM fraud, and cut a 4-minute RCA query down to 45 seconds.",
     "summary": (
-        "MSc Data Science (REVA, 8.35 GPA). Business Analyst @ Practo shipping "
-        "revenue-moving analytics on 4M+ users. Fluent in SQL, Python, Power BI, "
-        "Redshift, and LLM-powered tooling. Available for full-time roles in "
-        "Analytics, Business Analysis, Data Science, and AI Engineering."
+        "MSc Data Science (REVA, 8.35 GPA). Data Analyst and Business Analyst with "
+        "hands-on experience shipping revenue-moving analytics on 4M+ users at Practo. "
+        "Fluent in SQL, Python, Power BI, Redshift, and LLM-powered tooling. Available "
+        "for full-time roles in Data Analysis, Business Analysis, Data Science, and "
+        "AI Engineering (junior/intern level)."
     ),
     "impact_metrics": [
         {"value": "6–10%", "label": "Paid transactions lifted at Practo via LTV/CAC repricing"},
@@ -184,20 +185,20 @@ PROFILE = {
     "why_hire_me": [
         {
             "title": "Business impact first",
-            "body": "Every project I've shipped at Practo and InLighn moved a real metric: retention, conversion, cost, or cycle time. If a dashboard looks nice but nothing downstream changes, I don't count it as done.",
+            "body": "Every project I've shipped at Practo and Shameem Arts & Handicrafts moved a real metric: retention, conversion, cost, or cycle time. If a dashboard looks nice but nothing downstream changes, I don't count it as done.",
         },
         {
             "title": "Full analytics stack",
             "body": "SQL (CTEs, window functions, Redshift tuning) · Python (Pandas, Scikit-learn) · Power BI (DAX + modeling) · GA4 · A/B testing · cohort & funnel analysis · RCA.",
         },
         {
-            "title": "Uses AI tools where they help",
-            "body": "Built LLM+SQL agents that dropped ad-hoc turnaround from 24h to 5min. Comfortable pairing traditional analytics with LangChain, OpenAI, and RAG when it's actually the better tool for the job.",
+            "title": "Comfortable with AI engineering too",
+            "body": "Built LLM+SQL agents that dropped ad-hoc turnaround from 24h to 5min. Pair traditional analytics with LangChain, OpenAI, and RAG at a junior/intern level when it's the better tool for the job.",
         },
     ],
-    "roles_open_to": ["Business Analyst", "Data Analyst", "Data Scientist", "Analytics Engineer", "Product Analyst"],
+    "roles_open_to": ["Data Analyst", "Business Analyst", "Data Scientist", "Product Analyst", "AI Engineer (Junior)"],
     "stats": {
-        "years_experience": "1.5+",
+        "years_experience": "1+",
         "projects_shipped": "20+",
         "domains": "6",
         "certifications": "6+",
@@ -211,8 +212,8 @@ EXPERIENCE = [
         "role": "Business Analyst Intern",
         "company": "Practo Technologies",
         "location": "Bengaluru",
-        "period": "Sep 2025 – Present",
-        "current": True,
+        "period": "Sep 2025 – Jun 2026",
+        "current": False,
         "bullets": [
             "Built LTV, CAC, and contribution-margin models across 5 tiers, isolated acquisition cost by channel, and flagged 2 loss-making tiers; Growth repriced and retargeted those tiers, lifting paid transactions 6–10%.",
             "Diagnosed a 34% payment drop by segmenting 500K+ sessions by device and network quality, tracing it to an SDK bug affecting low-connectivity users; Product shipped a fix in 2 weeks and recovered the lost conversion.",
@@ -222,15 +223,15 @@ EXPERIENCE = [
         ],
     },
     {
-        "role": "Data Analyst Intern",
-        "company": "InLighn Tech (InLighnX Global Pvt Ltd)",
-        "location": "Bengaluru",
-        "period": "Mar 2025 – Jun 2025",
+        "role": "MIS Executive (Remote)",
+        "company": "Shameem Arts & Handicrafts",
+        "location": "Goa, India",
+        "period": "Apr 2023 – Jul 2025",
         "current": False,
         "bullets": [
-            "Built a SQL pipeline with validation checks to automate a manual KPI process that took 15+ hours a week, cutting delivery time by 60% and reducing recurring data errors.",
-            "Developed 5 self-serve dashboards in Power BI and Excel, which cut ad-hoc requests by 70% in the first month.",
-            "Audited SQL models after revenue reporting discrepancies, found the drifted filters causing them, and got teams onto unified definitions, removing 6 hours/week of reconciliation work.",
+            "Produced 6+ daily sales reports a week covering 500+ SKUs across 2–3 outlets, teaching myself Power BI to replace roughly half a day of manual compilation with the company's first live dashboards.",
+            "Wrote SQL queries and used Excel and Google Sheets to pull and clean sales and stock data across 500+ products, giving management a single view of performance by product, category, and outlet.",
+            "Ran an A/B test on 2 promotional offers; the premium offer won on sales and informed later promotions.",
         ],
     },
 ]
