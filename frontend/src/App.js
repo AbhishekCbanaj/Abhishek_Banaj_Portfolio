@@ -415,7 +415,7 @@ const Hero = ({ profile }) => (
           </div>
           <div className="mt-5 pt-5 border-t border-border grid grid-cols-2 gap-3">
             <div><div className="font-serif text-2xl font-bold">8.35</div><div className="text-[10px] font-mono uppercase tracking-wider text-[hsl(var(--muted-foreground))]">MSc GPA / REVA</div></div>
-            <div><div className="font-serif text-2xl font-bold">1.5+</div><div className="text-[10px] font-mono uppercase tracking-wider text-[hsl(var(--muted-foreground))]">Years shipping</div></div>
+            <div><div className="font-serif text-2xl font-bold">1+</div><div className="text-[10px] font-mono uppercase tracking-wider text-[hsl(var(--muted-foreground))]">Years shipping</div></div>
           </div>
         </motion.div>
       </motion.div>
