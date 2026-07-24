@@ -203,7 +203,7 @@ const CASE_STUDIES = [
   {
     id: "shameem",
     title: "Shameem Arts & Handicrafts · Sales Reporting",
-    role: "MIS Executive (Remote) · Apr 2023 – Jul 2025",
+    role: "MIS Executive (Remote) · Apr 2024 – Jul 2025",
     problem: "Sales and stock data for 500+ SKUs across 2–3 outlets compiled manually, taking half a day per report with no live view of performance.",
     action: "Taught myself Power BI to build the company's first live dashboards, wrote SQL/Excel/Sheets pipelines to clean and pull sales and stock data, and ran an A/B test on promotional offers.",
     result: [
@@ -415,7 +415,7 @@ const Hero = ({ profile }) => (
           </div>
           <div className="mt-5 pt-5 border-t border-border grid grid-cols-2 gap-3">
             <div><div className="font-serif text-2xl font-bold">8.35</div><div className="text-[10px] font-mono uppercase tracking-wider text-[hsl(var(--muted-foreground))]">MSc GPA / REVA</div></div>
-            <div><div className="font-serif text-2xl font-bold">1+</div><div className="text-[10px] font-mono uppercase tracking-wider text-[hsl(var(--muted-foreground))]">Years shipping</div></div>
+            <div><div className="font-serif text-2xl font-bold">2+</div><div className="text-[10px] font-mono uppercase tracking-wider text-[hsl(var(--muted-foreground))]">Years shipping</div></div>
           </div>
         </motion.div>
       </motion.div>
@@ -831,7 +831,7 @@ const Contact = ({ profile }) => {
           <dl className="grid sm:grid-cols-2 gap-6">
             <div>
               <dt className="text-sm font-semibold">Total Years of Experience</dt>
-              <dd className="text-sm text-[hsl(var(--muted-foreground))] mt-1">1+ year (Business Analyst Intern @ Practo; MIS Executive @ Shameem Arts & Handicrafts)</dd>
+              <dd className="text-sm text-[hsl(var(--muted-foreground))] mt-1">2+ years (Business Analyst Intern @ Practo; MIS Executive @ Shameem Arts & Handicrafts)</dd>
             </div>
             <div>
               <dt className="text-sm font-semibold">Current CTC</dt>

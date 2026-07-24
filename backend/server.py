@@ -198,7 +198,7 @@ PROFILE = {
     ],
     "roles_open_to": ["Data Analyst", "Business Analyst", "Data Scientist", "Product Analyst", "AI Engineer (Junior)"],
     "stats": {
-        "years_experience": "1+",
+        "years_experience": "2+",
         "projects_shipped": "20+",
         "domains": "6",
         "certifications": "6+",
@@ -226,7 +226,7 @@ EXPERIENCE = [
         "role": "MIS Executive (Remote)",
         "company": "Shameem Arts & Handicrafts",
         "location": "Goa, India",
-        "period": "Apr 2023 – Jul 2025",
+        "period": "Apr 2024 – Jul 2025",
         "current": False,
         "bullets": [
             "Produced 6+ daily sales reports a week covering 500+ SKUs across 2–3 outlets, teaching myself Power BI to replace roughly half a day of manual compilation with the company's first live dashboards.",
